@@ -1,0 +1,26 @@
+# analysis_options.yaml
+
+# Define reglas y configuraciones de linter para mantener un código consistente y de alta calidad.
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    # Reglas de estilo
+    always_declare_return_types: true # Obliga a declarar el tipo de retorno en métodos y funciones.
+    always_specify_types: true        # Obliga a especificar los tipos en variables y colecciones.
+    annotate_overrides: true          # Exige anotaciones @override en métodos anulados.
+    avoid_print: true                 # Evita el uso de print en bibliotecas (recomendado para código de producción).
+    prefer_final_fields: true         # Prefiere declarar los campos como final cuando sea posible.
+    use_function_type_syntax_for_parameters: true # Usa la sintaxis de tipo de función para los parámetros.
+
+analyzer:
+  strong-mode:
+    implicit-casts: false   # Evita conversiones implícitas entre tipos.
+    implicit-dynamic: false # Exige declarar tipos explícitos en lugar de usar 'dynamic' implícito.
+
+# Excluye archivos generados y externos del análisis
+exclude:
+  - 'test/**.g.dart'
+  - 'lib/**.g.dart'
+  - '.dart_tool/**'
+  - 'build/**'
