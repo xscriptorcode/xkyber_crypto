@@ -4,7 +4,7 @@ version: 1.0.0
 homepage: https://github.com/xscriptorcode/xkyber_crypto
 repository: https://github.com/xscriptorcode/xkyber_crypto
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   crypto: ^3.0.0
@@ -15,8 +15,6 @@ dev_dependencies:
   test: ^1.16.0
 
 # Información adicional
-authors:
-  - "x@xscriptor.com"
 issue_tracker: https://github.com/xscriptorcode/xkyber_crypto/issues
 
 # Etiquetas
