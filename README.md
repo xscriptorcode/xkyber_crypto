@@ -1,23 +1,21 @@
 # xKyberCrypto
 
-**xKyberCrypto** es una biblioteca que busca resolver inicialmente cifrado post-cuántico en fluter basándose en el algoritmo de Kyber, implementada en Dart. Esta biblioteca proporciona funcionalidades de generación de claves, cifrado y descifrado, diseñadas para aplicaciones que requieren alta seguridad criptográfica.
+**xKyberCrypto** is a library aimed at addressing post-quantum encryption in Flutter based on the Kyber algorithm, implemented in Dart. This library provides functionalities for key generation, encryption, and decryption, designed for applications requiring high cryptographic security.
 
-## Características
+## Features
 
-- Generación de pares de claves públicas y privadas mediante el algoritmo Kyber.
-- Cifrado de mensajes usando una clave pública para producir una clave compartida.
-- Descifrado de mensajes cifrados usando una clave privada para recuperar la clave compartida.
-- Generación de ruido determinístico seguro utilizando AES en modo CTR.
+- Generation of public and private key pairs using the Kyber algorithm.
+- Message encryption using a public key to produce a shared key.
+- Decryption of encrypted messages using a private key to recover the shared key.
+- Generation of secure deterministic noise using AES in CTR mode.
+## Installation
 
-## Instalación
-
-Para instalar esta biblioteca en tu proyecto de Dart, agrega `xkyber_crypto` como dependencia en tu archivo `pubspec.yaml`:
-
+To install this library in your Dart project, add `xkyber_crypto` as a dependency in your `pubspec.yaml` file:
 ```yaml
 dependencies:
   xkyber_crypto:
     git:
-      url: https://github.com/xscriptorcodexkyber_crypto.git
+      url: https://github.com/xscriptorcode/xkyber_crypto.git
 dart pub get
 import 'dart:typed_data';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
@@ -25,49 +23,55 @@ import 'package:xkyber_crypto/xkyber_crypto.dart';
 void main() {
   final xkyber = XKyberCryptoBase();
 
-  // Generación de claves pública y privada
+  // Generate public and private keys
   final keyPair = xkyber.generateKeyPair();
-  print('Clave pública: ${keyPair.publicKey}');
-  print('Clave privada: ${keyPair.privateKey}');
+  print('Public Key: ${keyPair.publicKey}');
+  print('Private Key: ${keyPair.privateKey}');
 
-  // Mensaje de ejemplo a cifrar
+  // example encrypting message
   final mensaje = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8]);
 
-  // Cifrado utilizando la clave pública
+  // encrypt using the public key
   final ciphertext = xkyber.encrypt(mensaje, keyPair.publicKey.coefficients);
   print('Mensaje cifrado: $ciphertext');
 
-  // Descifrado utilizando la clave privada
+  // decrypt using the private key
   final mensajeDescifrado = xkyber.decrypt(ciphertext, keyPair.privateKey.coefficients);
   print('Mensaje descifrado: $mensajeDescifrado');
 
-  // Generación de ruido determinístico
+  // Deterministic noise generation
   final seed = Uint8List.fromList([0, 1, 2, 3, 4, 5, 6, 7]);
   final ruido = xkyber.generateNoise(seed);
   print('Ruido determinístico generado: $ruido');
 }
 
-Este ejemplo muestra:
+This example demonstrates:
 
-Cómo generar un par de claves pública y privada.
-Cómo cifrar y descifrar un mensaje.
-Cómo generar ruido determinístico seguro.
-API
-XKyberCryptoBase
-La clase principal para interactuar con la biblioteca xKyberCrypto. Proporciona los siguientes métodos:
+- How to generate a public and private key pair.
+- How to encrypt and decrypt a message.
+- How to generate secure deterministic noise.
 
-generateKeyPair(): Genera un par de claves públicas y privadas.
-encrypt(Uint8List message, Uint8List publicKey): Cifra un mensaje usando la clave pública.
-decrypt(List<int> ciphertext, Uint8List privateKey): Descifra un mensaje cifrado usando la clave privada.
-generateNoise(Uint8List seed): Genera ruido determinístico a partir de una semilla.
-Contribuciones
-Las contribuciones son bienvenidas. Para contribuir:
+## API
 
-Haz un fork de este repositorio.
-Crea una rama nueva para tus cambios (git checkout -b feature/nueva-funcionalidad).
-Realiza los cambios y haz commit (git commit -m 'Añade nueva funcionalidad').
-Sube los cambios a tu repositorio (git push origin feature/nueva-funcionalidad).
-Abre un Pull Request en este repositorio.
+### XKyberCryptoBase
 
-Licencia
-Este proyecto está licenciado bajo la licencia MIT. Esta implementación de cifrado está inspirada en el algoritmo de Kyber y cumple con sus estándares para cifrado post-cuántico.
+The main class for interacting with the xKyberCrypto library. It provides the following methods:
+
+- `generateKeyPair()`: Generates a pair of public and private keys.
+- `encrypt(Uint8List message, Uint8List publicKey)`: Encrypts a message using the public key.
+- `decrypt(List<int> ciphertext, Uint8List privateKey)`: Decrypts an encrypted message using the private key.
+- `generateNoise(Uint8List seed)`: Generates deterministic noise from a seed.
+
+## Contributions
+
+Contributions are welcome. To contribute:
+
+1. Fork this repository.
+2. Create a new branch for your changes (`git checkout -b feature/new-functionality`).
+3. Make your changes and commit them (`git commit -m 'Add new functionality'`).
+4. Push your changes to your repository (`git push origin feature/new-functionality`).
+5. Open a Pull Request on this repository.
+
+## License
+
+This project is licensed under the MIT License. This encryption implementation is inspired by the Kyber algorithm and adheres to its standards for post-quantum encryption.

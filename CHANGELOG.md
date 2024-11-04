@@ -2,5 +2,4 @@
 
 ## [1.0.0] - 2024-10-28
 ### Added
-- Implementación inicial de xKyberCrypto con generación de claves, cifrado, descifrado y generación de ruido, basado en Kyber post-cuántica.
-
+- Initial implementation of xKyberCrypto with key generation, encryption, decryption, and noise generation, based on post-quantum Kyber.

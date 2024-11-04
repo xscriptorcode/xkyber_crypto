@@ -1,13 +1,15 @@
-# Guía de Contribución a xKyberCrypto
+# Contribution Guide for xKyberCrypto
 
-¡Gracias por tu interés en contribuir a xKyberCrypto! Aquí te explicamos cómo puedes colaborar.
+Thank you for your interest in contributing to xKyberCrypto! Here’s how you can collaborate.
 
-## Pasos para Contribuir
+## Steps to Contribute
 
-1. **Haz un Fork del Repositorio**  
-   Crea una copia de este repositorio en tu cuenta de GitHub usando el botón "Fork" en la esquina superior derecha.
+1. **Fork the Repository**  
+   Create a copy of this repository in your GitHub account using the "Fork" button in the upper-right corner.
 
-2. **Clona el Repositorio a Tu Entorno Local**  
-   Clona tu fork localmente para trabajar en él:
+2. **Clone the Repository to Your Local Environment**  
+   Clone your fork locally to work on it:
    ```bash
-   git clone https://github.com/tu_usuario/xkyber_crypto.git
+   git clone https://github.com/xscriptor/xkyber_crypto.git
+
+3. **Start**
