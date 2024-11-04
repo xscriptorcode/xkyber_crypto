@@ -33,16 +33,16 @@ void main() {
 
   // encrypt using the public key
   final ciphertext = xkyber.encrypt(mensaje, keyPair.publicKey.coefficients);
-  print('Mensaje cifrado: $ciphertext');
+  print('encrypted message: $ciphertext');
 
   // decrypt using the private key
   final mensajeDescifrado = xkyber.decrypt(ciphertext, keyPair.privateKey.coefficients);
-  print('Mensaje descifrado: $mensajeDescifrado');
+  print('decrypted message: $mensajeDescifrado');
 
   // Deterministic noise generation
   final seed = Uint8List.fromList([0, 1, 2, 3, 4, 5, 6, 7]);
   final ruido = xkyber.generateNoise(seed);
-  print('Ruido determinístico generado: $ruido');
+  print('Deterministic noise: $ruido');
 }
 
 This example demonstrates:
@@ -71,6 +71,9 @@ Contributions are welcome. To contribute:
 3. Make your changes and commit them (`git commit -m 'Add new functionality'`).
 4. Push your changes to your repository (`git push origin feature/new-functionality`).
 5. Open a Pull Request on this repository.
+
+## Note:
+The first version of this project was in Spanish, so the variable names remain in Spanish.
 
 ## License
 
