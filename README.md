@@ -162,4 +162,4 @@ This project is inspired by the Kyber algorithm, selected by NIST as part of its
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
