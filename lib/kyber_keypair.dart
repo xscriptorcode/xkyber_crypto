@@ -13,7 +13,8 @@ class KyberKeyPair {
 
   KyberKeyPair.fromPolynomials(this.publicKey, this.privateKey);
 
-  factory KyberKeyPair.generate({Polynomial? publicKey, Polynomial? privateKey}) {
+  factory KyberKeyPair.generate(
+      {Polynomial? publicKey, Polynomial? privateKey}) {
     if (publicKey != null && privateKey != null) {
       return KyberKeyPair._(publicKey, privateKey);
     }
@@ -30,19 +31,23 @@ class KyberKeyPair {
       if (value == 0) continue; // Rechaza ceros
       noise.add(value); // 1 a 3328
       attempts++;
-      if (attempts > 100000) throw Exception('No se pudo generar ruido sin ceros después de 100000 intentos');
+      if (attempts > 100000)
+        throw Exception(
+            'No se pudo generar ruido sin ceros después de 100000 intentos');
     }
 
     Polynomial generatedPrivateKey = Polynomial(noise);
 
     final fixedValue = Polynomial.fixed();
-    Polynomial generatedPublicKey = generatedPrivateKey.multiply(fixedValue, 3329);
+    Polynomial generatedPublicKey =
+        generatedPrivateKey.multiply(fixedValue, 3329);
 
     return KyberKeyPair._(generatedPublicKey, generatedPrivateKey);
   }
 
   static Uint8List _generateSeed(int length) {
     final random = Random.secure();
-    return Uint8List.fromList(List<int>.generate(length, (_) => random.nextInt(256)));
+    return Uint8List.fromList(
+        List<int>.generate(length, (_) => random.nextInt(256)));
   }
 }

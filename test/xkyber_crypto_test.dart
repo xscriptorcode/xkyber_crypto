@@ -18,7 +18,8 @@ void main() {
   print('Mensaje cifrado: $ciphertext');
 
   // Descifrado utilizando la clave privada
-  final privateKeyUint8List = Uint8List.fromList(keyPair.privateKey.coefficients);
+  final privateKeyUint8List =
+      Uint8List.fromList(keyPair.privateKey.coefficients);
   final mensajeDescifrado = xkyber.decrypt(ciphertext, privateKeyUint8List);
   print('Mensaje descifrado: $mensajeDescifrado');
 

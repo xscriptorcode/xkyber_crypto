@@ -5,7 +5,8 @@ import 'package:xkyber_crypto/modular_arithmetic.dart';
 import 'package:xkyber_crypto/kyber_keypair.dart';
 
 /// Función para crear una clave compartida a partir de un par de claves y otra clave pública
-Polynomial createSharedKey(KyberKeyPair keyPair, Polynomial otherPublicKey, int mod) {
+Polynomial createSharedKey(
+    KyberKeyPair keyPair, Polynomial otherPublicKey, int mod) {
   return keyPair.privateKey.multiply(otherPublicKey, mod);
 }
 
@@ -15,7 +16,8 @@ String encryptSession(String sessionData, Polynomial sharedKey, int mod) {
   List<int> encryptedBytes = [];
 
   for (int i = 0; i < dataBytes.length; i++) {
-    int sharedKeyCoeff = sharedKey.coefficients[i % sharedKey.coefficients.length];
+    int sharedKeyCoeff =
+        sharedKey.coefficients[i % sharedKey.coefficients.length];
     if (sharedKeyCoeff == 0 || gcd(sharedKeyCoeff, mod) != 1) {
       throw Exception("Coeficiente no invertible en la clave compartida.");
     }
@@ -32,7 +34,8 @@ String decryptSession(String encryptedData, Polynomial sharedKey, int mod) {
   List<int> decryptedBytes = [];
 
   for (int i = 0; i < encryptedBytes.length; i++) {
-    int sharedKeyCoeff = sharedKey.coefficients[i % sharedKey.coefficients.length];
+    int sharedKeyCoeff =
+        sharedKey.coefficients[i % sharedKey.coefficients.length];
     if (sharedKeyCoeff == 0 || gcd(sharedKeyCoeff, mod) != 1) {
       throw Exception("Coeficiente no invertible en la clave compartida.");
     }

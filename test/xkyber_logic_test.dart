@@ -4,7 +4,6 @@ import 'package:xkyber_crypto/polynomial.dart';
 import 'package:xkyber_crypto/kyber_keypair.dart';
 import 'package:xkyber_crypto/src/exceptions.dart';
 
-
 void main() {
   group('Kyber Logic Tests', () {
     // Setup: Example values for testing
@@ -13,7 +12,8 @@ void main() {
       publicKey: Polynomial([5, 4, 3, 2, 1]),
     );
     final exampleModulus = 7;
-    final invalidPolynomial = Polynomial([]); // Empty polynomial as invalid object
+    final invalidPolynomial =
+        Polynomial([]); // Empty polynomial as invalid object
     final invalidKeyPair = KyberKeyPair.generate(
       privateKey: invalidPolynomial,
       publicKey: invalidPolynomial,
@@ -21,15 +21,18 @@ void main() {
 
     test('Create shared key with valid inputs', () {
       final otherPublicKey = Polynomial([6, 5, 4, 3, 2]);
-      final sharedKey = createSharedKey(exampleKeyPair, otherPublicKey, exampleModulus);
+      final sharedKey =
+          createSharedKey(exampleKeyPair, otherPublicKey, exampleModulus);
 
       expect(sharedKey.coefficients, isNotEmpty);
-      expect(sharedKey.coefficients.length, exampleKeyPair.privateKey.coefficients.length);
+      expect(sharedKey.coefficients.length,
+          exampleKeyPair.privateKey.coefficients.length);
     });
 
     test('Create shared key with invalid KeyPair throws exception', () {
       expect(
-        () => createSharedKey(invalidKeyPair, Polynomial([6, 5, 4]), exampleModulus),
+        () => createSharedKey(
+            invalidKeyPair, Polynomial([6, 5, 4]), exampleModulus),
         throwsA(isA<InvalidInputException>()),
       );
     });

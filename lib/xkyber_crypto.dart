@@ -17,5 +17,4 @@ export 'polynomial.dart';
 export 'polynomial_compression.dart';
 export 'coefficients_codec.dart';
 
-
 // TODO: Export any libraries intended for clients of this package.

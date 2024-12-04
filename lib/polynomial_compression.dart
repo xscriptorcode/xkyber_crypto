@@ -17,5 +17,7 @@ List<int> compressPolynomial(List<int> polynomial, int d, int q) {
 
 /// Aplica descompresión a todos los coeficientes de un polinomio comprimido.
 List<int> decompressPolynomial(List<int> compressedPolynomial, int d, int q) {
-  return compressedPolynomial.map((coeff) => decompressCoefficient(coeff, d, q)).toList();
+  return compressedPolynomial
+      .map((coeff) => decompressCoefficient(coeff, d, q))
+      .toList();
 }
