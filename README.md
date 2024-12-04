@@ -125,13 +125,20 @@ Ensure you have the latest versions to guarantee compatibility and performance.
 
 ## Testing and Quality
 
-To run the tests, use:
+### Automated Tests
+
+This library includes a comprehensive set of automated tests to ensure the functionality of its core features, such as:
+
+- **Shared Key Generation**: Verifies the creation of a shared key from public and private keys.
+- **Encryption and Decryption**: Tests the correctness of message encryption and decryption processes.
+- **Error Handling**: Ensures that invalid inputs throw the expected exceptions.
+- **Mathematical Operations**: Validates core modular arithmetic functions, like `gcd` (Greatest Common Divisor).
+
+The tests are located in the `test/` folder and can be executed using the following command:
 
 ```bash
 dart test
 ```
-
-This will validate the library's main functionalities and ensure there are no errors.
 
 ---
 
