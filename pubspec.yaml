@@ -1,5 +1,5 @@
 name: xkyber_crypto
-description: Una implementación del algoritmo de Kyber para Flutter de X para cifrado post-cuántico en Dart.
+description: A library for post-quantum cryptography using the Kyber algorithm.
 version: 1.0.1
 homepage: https://github.com/xscriptorcode/xkyber_crypto
 repository: https://github.com/xscriptorcode/xkyber_crypto
