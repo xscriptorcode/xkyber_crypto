@@ -1,22 +1,52 @@
 # xKyberCrypto
 
-**xKyberCrypto** is a library aimed at addressing post-quantum encryption in Flutter based on the Kyber algorithm, implemented in Dart. This library provides functionalities for key generation, encryption, and decryption, designed for applications requiring high cryptographic security.
+**xKyberCrypto** is a library for post-quantum encryption in Dart, based on the Kyber algorithm. It is designed for applications requiring high standards of cryptographic security, especially in the context of Flutter.
+
+The Kyber algorithm is part of the proposals selected by NIST for post-quantum cryptography standards, designed to withstand attacks from quantum computers.
 
 ## Features
 
 - Generation of public and private key pairs using the Kyber algorithm.
 - Message encryption using a public key to produce a shared key.
 - Decryption of encrypted messages using a private key to recover the shared key.
-- Generation of secure deterministic noise using AES in CTR mode.
+- Secure deterministic noise generation using AES in CTR mode.
+- Compatible with the latest versions of Dart and its tools.
+
+---
+
+## Prerequisites
+
+Before using this library, ensure you have the following:
+- Dart SDK: version 2.12.0 or higher.
+- Flutter (optional, if using this library in a Flutter project).
+- An editor such as Visual Studio Code or IntelliJ to facilitate development.
+
+---
+
 ## Installation
 
-To install this library in your Dart project, add `xkyber_crypto` as a dependency in your `pubspec.yaml` file:
+To install this library, add the dependency to your `pubspec.yaml` file:
+
 ```yaml
 dependencies:
   xkyber_crypto:
     git:
       url: https://github.com/xscriptorcode/xkyber_crypto.git
+```
+
+Update your dependencies with:
+
+```bash
 dart pub get
+```
+
+---
+
+## Usage Example
+
+Here’s a basic example of how to use this library:
+
+```dart
 import 'dart:typed_data';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
 
@@ -28,53 +58,108 @@ void main() {
   print('Public Key: ${keyPair.publicKey}');
   print('Private Key: ${keyPair.privateKey}');
 
-  // example encrypting message
-  final mensaje = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8]);
+  // Encrypt a message
+  final message = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8]);
+  final ciphertext = xkyber.encrypt(message, keyPair.publicKey.coefficients);
+  print('Encrypted Message: $ciphertext');
 
-  // encrypt using the public key
-  final ciphertext = xkyber.encrypt(mensaje, keyPair.publicKey.coefficients);
-  print('encrypted message: $ciphertext');
+  // Decrypt the message
+  final decryptedMessage = xkyber.decrypt(ciphertext, keyPair.privateKey.coefficients);
+  print('Decrypted Message: $decryptedMessage');
 
-  // decrypt using the private key
-  final mensajeDescifrado = xkyber.decrypt(ciphertext, keyPair.privateKey.coefficients);
-  print('decrypted message: $mensajeDescifrado');
-
-  // Deterministic noise generation
+  // Generate deterministic noise
   final seed = Uint8List.fromList([0, 1, 2, 3, 4, 5, 6, 7]);
-  final ruido = xkyber.generateNoise(seed);
-  print('Deterministic noise: $ruido');
+  final noise = xkyber.generateNoise(seed);
+  print('Deterministic Noise: $noise');
 }
+```
 
-This example demonstrates:
+This example covers:
 
-- How to generate a public and private key pair.
-- How to encrypt and decrypt a message.
-- How to generate secure deterministic noise.
+- Generating public and private keys.
+- Encrypting and decrypting messages.
+- Using deterministic noise for secure operations.
+
+---
 
 ## API
 
-### XKyberCryptoBase
+### Main Classes
 
-The main class for interacting with the xKyberCrypto library. It provides the following methods:
+- **`XKyberCryptoBase`**:
+  - `generateKeyPair()`: Generates a pair of keys (public and private).
+  - `encrypt(Uint8List message, Uint8List publicKey)`: Encrypts a message using the public key.
+  - `decrypt(List<int> ciphertext, Uint8List privateKey)`: Decrypts an encrypted message using the private key.
+  - `generateNoise(Uint8List seed)`: Generates deterministic noise from a seed.
 
-- `generateKeyPair()`: Generates a pair of public and private keys.
-- `encrypt(Uint8List message, Uint8List publicKey)`: Encrypts a message using the public key.
-- `decrypt(List<int> ciphertext, Uint8List privateKey)`: Decrypts an encrypted message using the private key.
-- `generateNoise(Uint8List seed)`: Generates deterministic noise from a seed.
+---
+
+## Project Structure
+
+- **`lib/`**:
+  Contains the main implementation of the library.
+  - `kyber_kem.dart`: Implementation of the Kyber Key Encapsulation Mechanism.
+  - `modular_arithmetic.dart`: Mathematical utilities for modular operations.
+  - `polynomial.dart`: Representation and manipulation of polynomials.
+  - `deterministic_noise_generator.dart`: Deterministic noise generation.
+
+- **`example/`**:
+  Example code for understanding the library usage.
+
+- **`test/`**:
+  Automated tests to verify library functionality.
+
+---
+
+## Dependencies
+
+The library uses the following dependencies:
+
+- **`crypto: ^3.0.6`**: Provides common cryptographic functions.
+- **`pointycastle: ^3.9.1`**: Advanced library for cryptography in Dart.
+- **`lints: ^5.0.0`**: Establishes style rules and best practices for Dart code.
+
+Ensure you have the latest versions to guarantee compatibility and performance.
+
+---
+
+## Testing and Quality
+
+To run the tests, use:
+
+```bash
+dart test
+```
+
+This will validate the library's main functionalities and ensure there are no errors.
+
+---
+
+## Warnings and Limitations
+
+- This library is intended for research and learning purposes; it is not recommended for production environments without additional audits.
+- Performance on low-power devices may vary depending on the size of the encrypted data.
+
+---
 
 ## Contributions
 
 Contributions are welcome. To contribute:
 
 1. Fork this repository.
-2. Create a new branch for your changes (`git checkout -b feature/new-functionality`).
+2. Create a new branch (`git checkout -b feature/new-functionality`).
 3. Make your changes and commit them (`git commit -m 'Add new functionality'`).
-4. Push your changes to your repository (`git push origin feature/new-functionality`).
-5. Open a Pull Request on this repository.
+4. Push your branch (`git push origin feature/new-functionality`).
+5. Open a Pull Request in this repository.
 
-## Note:
-The first version of this project was in Spanish, so the variable names remain in Spanish.
+---
+
+## Acknowledgments and References
+
+This project is inspired by the Kyber algorithm, selected by NIST as part of its post-quantum cryptography standards. More information about Kyber is available [here](https://pq-crystals.org/kyber/).
+
+---
 
 ## License
 
-This project is licensed under the MIT License. This encryption implementation is inspired by the Kyber algorithm and adheres to its standards for post-quantum encryption.
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
