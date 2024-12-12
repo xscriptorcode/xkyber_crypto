@@ -16,5 +16,15 @@ export 'noise_generator.dart';
 export 'polynomial.dart';
 export 'polynomial_compression.dart';
 export 'coefficients_codec.dart';
+export 'params.dart';
+export 'poly.dart';
+export 'polyvec.dart';
+export 'randombytes.dart';
+export 'reduce.dart';
+export 'shake.dart';
+export 'gen_matrix.dart';
+export 'fq.dart';
+export 'indcpa.dart';
+export 'kem.dart';
 
 // TODO: Export any libraries intended for clients of this package.

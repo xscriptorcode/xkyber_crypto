@@ -1,35 +1,66 @@
 import 'dart:typed_data';
-import 'package:xkyber_crypto/polynomial.dart';
-import '../deterministic_noise_generator.dart';
-import '../kyber_kem.dart';
-import '../kyber_keypair.dart';
+import 'dart:math';
+import 'package:xkyber_crypto/params.dart';
+import 'package:xkyber_crypto/kem.dart';         // Para crypto_kem_keypair, crypto_kem_enc, crypto_kem_dec
+import 'package:xkyber_crypto/kyber_keypair.dart'; // Nuestra clase KyberKeyPair que usa el kem real
 
 /// Clase principal de la biblioteca xKyberCrypto que proporciona
 /// funcionalidades de cifrado post-cuántico basado en Kyber.
+///
+/// Esta clase ahora:
+/// - Genera un par de claves Kyber (publicKey, privateKey).
+/// - Encapsula una clave compartida usando la publicKey.
+/// - Descapsula la clave compartida usando la privateKey.
+/// - Usa la clave compartida `ss` obtenida del KEM para cifrar/descifrar un mensaje con un cifrado simétrico simple.
+
 class XKyberCryptoBase {
-  /// Genera una clave pública y una clave privada utilizando Kyber.
+
+  /// Genera un par de claves pública y privada utilizando Kyber.
+  /// Retorna un objeto KyberKeyPair con publicKey y secretKey.
   KyberKeyPair generateKeyPair() {
-    return KyberKeyPair.generate(); // Genera un par de claves
+    return KyberKeyPair.generate(); 
   }
 
-  /// Cifra un mensaje dado utilizando la clave pública.
-  List<int> encrypt(Uint8List message, Uint8List publicKey) {
-    final KyberKEM kem = KyberKEM(
-        Polynomial.fixed(), Polynomial.fixed()); // Especifica el tipo KyberKEM
-    return kem.encapsulate(); // Usa encapsulación para cifrado
+  /// Encapsula una clave compartida utilizando la llave pública (publicKey).
+  /// Retorna un mapa con el ciphertext KEM y la sharedSecret.
+  Map<String, Uint8List> encapsulate(Uint8List publicKey) {
+    Uint8List c = Uint8List(KYBER_CIPHERTEXTBYTES);
+    Uint8List ss = Uint8List(KYBER_SSBYTES);
+    crypto_kem_enc(c, ss, publicKey);
+    return {
+      'ciphertextKEM': c,
+      'sharedSecret': ss
+    };
   }
 
-  /// Descifra un mensaje cifrado utilizando la clave privada.
-  List<int> decrypt(List<int> ciphertext, Uint8List privateKey) {
-    final KyberKEM kem = KyberKEM(
-        Polynomial.fixed(), Polynomial.fixed()); // Especifica el tipo KyberKEM
-    return kem.decapsulate(ciphertext); // Usa decapsulación para descifrado
+  /// Descapsula el ciphertext KEM usando la llave privada (privateKey)
+  /// para recuperar la sharedSecret.
+  Uint8List decapsulate(Uint8List ciphertextKEM, Uint8List privateKey) {
+    Uint8List ss = Uint8List(KYBER_SSBYTES);
+    crypto_kem_dec(ss, ciphertextKEM, privateKey);
+    return ss;
   }
 
-  /// Genera ruido determinístico necesario para el cifrado.
-  Uint8List generateNoise(Uint8List seed) {
-    final DeterministicNoiseGenerator generator = DeterministicNoiseGenerator(
-        seed, seed.length); // Especifica el tipo DeterministicNoiseGenerator
-    return generator.generateNoise(); // Genera ruido determinístico
+  /// Cifra un mensaje dado utilizando la sharedSecret derivada del KEM.
+  /// Aquí usamos un cifrado simétrico muy simple (XOR) solo como ejemplo.
+  /// En un entorno real, usar AES-GCM u otro cifrador autenticado.
+  Uint8List encryptMessage(Uint8List message, Uint8List sharedSecret) {
+    // Supongamos sharedSecret es nuestra "key".
+    // XOR no es seguro, pero sirve de ejemplo.
+    Uint8List ciphertext = Uint8List(message.length);
+    for (int i = 0; i < message.length; i++) {
+      ciphertext[i] = message[i] ^ sharedSecret[i % sharedSecret.length];
+    }
+    return ciphertext;
+  }
+
+  /// Descifra un mensaje usando la sharedSecret.
+  /// Con XOR, el descifrado es igual al cifrado.
+  Uint8List decryptMessage(Uint8List ciphertext, Uint8List sharedSecret) {
+    Uint8List plaintext = Uint8List(ciphertext.length);
+    for (int i = 0; i < ciphertext.length; i++) {
+      plaintext[i] = ciphertext[i] ^ sharedSecret[i % sharedSecret.length];
+    }
+    return plaintext;
   }
 }

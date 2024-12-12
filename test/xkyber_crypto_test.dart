@@ -1,3 +1,4 @@
+/*
 import 'dart:typed_data';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
 
@@ -28,3 +29,5 @@ void main() {
   final ruido = xkyber.generateNoise(seed);
   print('Ruido determinístico generado: $ruido');
 }
+*/
+

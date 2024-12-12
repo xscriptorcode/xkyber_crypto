@@ -1,0 +1,19 @@
+// fq.dart
+//
+// Operaciones en el campo mod q.
+
+import 'params.dart';
+import 'reduce.dart';
+
+int fqadd(int a, int b) {
+  int r = a + b;
+  if (r >= KYBER_Q) r -= KYBER_Q;
+  return r;
+}
+
+
+int fqsub(int a, int b) {
+  int r = a - b;
+  if (r < 0) r += KYBER_Q;
+  return r;
+}

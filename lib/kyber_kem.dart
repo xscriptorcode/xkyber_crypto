@@ -1,46 +1,29 @@
-// lib/crypto/kyber_kem.dart
+// kyber_kem.dart
+//
+// Ahora que tenemos la lógica real en kem.dart, este archivo puede ser un wrapper.
 
 import 'dart:typed_data';
-import 'polynomial.dart';
-import 'deterministic_noise_generator.dart';
-import 'polynomial_compression.dart';
-import 'constant_time_comparison.dart';
+import 'params.dart';
+import 'kem.dart';
+
+class KyberEncapsulationResult {
+  final Uint8List ciphertextKEM;
+  final Uint8List sharedSecret;
+  KyberEncapsulationResult(this.ciphertextKEM, this.sharedSecret);
+}
 
 class KyberKEM {
-  final Polynomial publicKey;
-  final Polynomial privateKey;
-
-  KyberKEM(this.publicKey, this.privateKey);
-
-  /// Encapsula el mensaje y genera una clave compartida utilizando compresión y ruido determinista.
-  List<int> encapsulate() {
-    // Genera ruido determinista para el polinomio utilizando la semilla de la clave pública
-    final noiseGenerator = DeterministicNoiseGenerator(
-        Uint8List.fromList(publicKey.coefficients),
-        publicKey.coefficients.length);
-    final noise = noiseGenerator.generateNoise();
-    Polynomial sharedKey = publicKey.multiply(Polynomial(noise), 3329);
-
-    // Comprime el polinomio resultante para el envío
-    final compressedSharedKey =
-        compressPolynomial(sharedKey.coefficients, 10, 3329);
-    return compressedSharedKey;
+  // Genera keypair real
+  static KyberEncapsulationResult encapsulate(Uint8List pk) {
+    Uint8List c = Uint8List(KYBER_CIPHERTEXTBYTES);
+    Uint8List ss = Uint8List(KYBER_SSBYTES);
+    crypto_kem_enc(c, ss, pk);
+    return KyberEncapsulationResult(c, ss);
   }
 
-  /// Descapsula el mensaje cifrado y reconstruye la clave compartida.
-  List<int> decapsulate(List<int> ciphertext) {
-    // Descomprime el polinomio del mensaje cifrado
-    final decompressedCiphertext = decompressPolynomial(ciphertext, 10, 3329);
-    Polynomial ciphertextPoly =
-        Polynomial(Uint8List.fromList(decompressedCiphertext));
-    Polynomial sharedKey = privateKey.multiply(ciphertextPoly, 3329);
-
-    // Compara en tiempo constante para verificar integridad
-    if (!constantTimeCompare(Uint8List.fromList(ciphertextPoly.coefficients),
-        Uint8List.fromList(sharedKey.coefficients))) {
-      throw Exception("Error en descifrado: verificación fallida.");
-    }
-
-    return sharedKey.coefficients;
+  static Uint8List decapsulate(Uint8List c, Uint8List sk) {
+    Uint8List ss = Uint8List(KYBER_SSBYTES);
+    crypto_kem_dec(ss, c, sk);
+    return ss;
   }
 }
