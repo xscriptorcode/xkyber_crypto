@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.5] - 2024-12-12
+### Update
+- Update example and Readme.md
+
 ## [1.0.4] - 2024-12-12
 ### Update
 - Adding more documentation and update following the Kyber Structure

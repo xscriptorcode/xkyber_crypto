@@ -1,16 +1,14 @@
-# xKyberCrypto
+# XKyber_crypto
 
-**xKyberCrypto** is a library for post-quantum encryption in Dart, based on the Kyber algorithm. It is designed for applications requiring high standards of cryptographic security, especially in the context of Flutter.
-
-The Kyber algorithm is part of the proposals selected by NIST for post-quantum cryptography standards, designed to withstand attacks from quantum computers.
+Is a Dart library for post-quantum encryption, providing a Key Encapsulation Mechanism (KEM) based on the Kyber algorithm. Kyber is a post-quantum cryptographic scheme selected by NIST for standardization, designed to be secure against attacks from quantum computers.
 
 ## Features
 
-- Generation of public and private key pairs using the Kyber algorithm.
-- Message encryption using a public key to produce a shared key.
-- Decryption of encrypted messages using a private key to recover the shared key.
-- Secure deterministic noise generation using AES in CTR mode.
-- Compatible with the latest versions of Dart and its tools.
+- Generation of public and private key pairs using the Kyber KEM.
+- Encapsulation of a shared secret using a public key.
+- Decapsulation of the shared secret using a private key.
+- The shared secret can then be used with a symmetric cipher (e.g., AES-GCM) to encrypt or decrypt arbitrary messages.
+- Uses SHAKE128 and fully follows the official Kyber specifications.
 
 ---
 
@@ -48,49 +46,70 @@ Here’s a basic example of how to use this library:
 
 ```dart
 import 'dart:typed_data';
-import 'package:xkyber_crypto/xkyber_crypto.dart';
+import 'dart:convert';
+import 'package:xkyber_crypto/kem.dart';
+import 'package:xkyber_crypto/kyber_keypair.dart';
+
+// Simple XOR-based encryption for demonstration only.
+// In a real application, use a secure AEAD cipher like AES-GCM.
+Uint8List xorEncrypt(Uint8List data, Uint8List key) {
+  final result = Uint8List(data.length);
+  for (int i = 0; i < data.length; i++) {
+    result[i] = data[i] ^ key[i % key.length];
+  }
+  return result;
+}
 
 void main() {
-  final xkyber = XKyberCryptoBase();
+  // Generate keypair (publicKey, privateKey)
+  final keyPair = KyberKeyPair.generate();
+  final pk = keyPair.publicKey;
+  final sk = keyPair.privateKey;
 
-  // Generate public and private keys
-  final keyPair = xkyber.generateKeyPair();
-  print('Public Key: ${keyPair.publicKey}');
-  print('Private Key: ${keyPair.privateKey}');
+  // Encapsulate a shared secret using the public key
+  final c = Uint8List(768); // Kyber512 ciphertext size
+  final ssSender = Uint8List(32); // Shared secret size: 32 bytes
+  cryptoKemEnc(c, ssSender, pk);
 
-  // Encrypt a message
-  final message = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8]);
-  final ciphertext = xkyber.encrypt(message, keyPair.publicKey.coefficients);
-  print('Encrypted Message: $ciphertext');
+  // On the receiver side, decapsulate using the private key to recover ss
+  final ssReceiver = Uint8List(32);
+  cryptoKemDec(ssReceiver, c, sk);
 
-  // Decrypt the message
-  final decryptedMessage = xkyber.decrypt(ciphertext, keyPair.privateKey.coefficients);
-  print('Decrypted Message: $decryptedMessage');
+  // Both ssSender and ssReceiver are identical. Now use ss as a symmetric key.
 
-  // Generate deterministic noise
-  final seed = Uint8List.fromList([0, 1, 2, 3, 4, 5, 6, 7]);
-  final noise = xkyber.generateNoise(seed);
-  print('Deterministic Noise: $noise');
+  final message = utf8.encode("Hello, Kyber!") as Uint8List;
+  
+  // Encrypt message with ss (XOR for demonstration only)
+  final ciphertext = xorEncrypt(message, ssSender);
+
+  // Decrypt using ssReceiver
+  final decrypted = xorEncrypt(ciphertext, ssReceiver);
+  print("Decrypted message: ${utf8.decode(decrypted)}");
 }
+
 ```
 
-This example covers:
+## This example demonstrates:
 
-- Generating public and private keys.
-- Encrypting and decrypting messages.
-- Using deterministic noise for secure operations.
+- Generating a Kyber key pair.
+- Encapsulating a shared secret with cryptoKemEnc and pk.
+- Decapsulating the shared secret with cryptoKemDec and sk.
+- Using the shared secret (ss) for symmetric encryption.
 
 ---
 
-## API
+# API
 
-### Main Classes
 
-- **`XKyberCryptoBase`**:
-  - `generateKeyPair()`: Generates a pair of keys (public and private).
-  - `encrypt(Uint8List message, Uint8List publicKey)`: Encrypts a message using the public key.
-  - `decrypt(List<int> ciphertext, Uint8List privateKey)`: Decrypts an encrypted message using the private key.
-  - `generateNoise(Uint8List seed)`: Generates deterministic noise from a seed.
+## Main Functions
+- cryptoKemKeypair(Uint8List pk, Uint8List sk): Generates a Kyber key pair.
+- cryptoKemEnc(Uint8List c, Uint8List ss, Uint8List pk): Encapsulates a shared secret ss using pk and produces ciphertext c.
+- cryptoKemDec(Uint8List ss, Uint8List c, Uint8List sk): Decapsulates c using sk to recover ss.
+
+## Classes
+- KyberKeyPair:
+- generate(): Produces a Kyber key pair (publicKey, privateKey).
+- publicKey, privateKey: Byte arrays representing the keys.
 
 ---
 
@@ -98,10 +117,11 @@ This example covers:
 
 - **`lib/`**:
   Contains the main implementation of the library.
-  - `kyber_kem.dart`: Implementation of the Kyber Key Encapsulation Mechanism.
-  - `modular_arithmetic.dart`: Mathematical utilities for modular operations.
-  - `polynomial.dart`: Representation and manipulation of polynomials.
-  - `deterministic_noise_generator.dart`: Deterministic noise generation.
+- kem.dart: Core Kyber KEM functions (cryptoKemEnc, cryptoKemDec, cryptoKemKeypair).
+- kyber_keypair.dart: Handles key generation and utilities.
+- poly.dart, polyvec.dart, ntt.dart, params.dart, etc.: Core Kyber implementation (NTT, polynomial operations, parameter definitions).
+- shake.dart: SHAKE128 implementation.
+- reduce.dart, fq.dart: Modular arithmetic and field operations.
 
 - **`example/`**:
   Example code for understanding the library usage.
@@ -127,14 +147,13 @@ Ensure you have the latest versions to guarantee compatibility and performance.
 
 ### Automated Tests
 
-This library includes a comprehensive set of automated tests to ensure the functionality of its core features, such as:
+### The library includes tests to verify:
 
-- **Shared Key Generation**: Verifies the creation of a shared key from public and private keys.
-- **Encryption and Decryption**: Tests the correctness of message encryption and decryption processes.
-- **Error Handling**: Ensures that invalid inputs throw the expected exceptions.
-- **Mathematical Operations**: Validates core modular arithmetic functions, like `gcd` (Greatest Common Divisor).
+- Key Generation and Shared Secret: Ensures correctness of generated keys and shared secrets.
+- Encapsulation/Decapsulation: Validates that cryptoKemEnc and cryptoKemDec produce matching shared secrets.
+- Math Operations: Checks NTT, modular arithmetic, and noise distribution.
 
-The tests are located in the `test/` folder and can be executed using the following command:
+Run with:
 
 ```bash
 dart test
@@ -144,8 +163,8 @@ dart test
 
 ## Warnings and Limitations
 
-- This library is intended for research and learning purposes; it is not recommended for production environments without additional audits.
-- Performance on low-power devices may vary depending on the size of the encrypted data.
+- The library is intended for research, testing, and educational use. For production environments, a thorough security audit is recommended.
+- Performance may vary depending on device capabilities.
 
 ---
 

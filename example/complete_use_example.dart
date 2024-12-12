@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
 
 void main() {
-  final xkyber = XKyberCryptoBase();
+  final XKyberCryptoBase xkyber = XKyberCryptoBase();
 
   // 1. Generar llaves
   KyberKeyPair keyPair = xkyber.generateKeyPair();
