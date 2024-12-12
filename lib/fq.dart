@@ -3,7 +3,6 @@
 // Operaciones en el campo mod q.
 
 import 'params.dart';
-import 'reduce.dart';
 
 int fqadd(int a, int b) {
   int r = a + b;

@@ -126,7 +126,7 @@ List<int> invntt(List<int> a) {
   // Por razones de espacio, mostraremos el código final directamente:
 
   // Este código es una adaptación de PQClean:
-  int start = 0;
+  // int start = 0;
   for (int step = 2; step <= 128; step <<= 1) {
     for (int i = 0; i < n; i += 2 * step) {
       for (int j = i; j < i + step; j++) {

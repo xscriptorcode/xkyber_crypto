@@ -97,7 +97,7 @@ int crypto_kem_enc(Uint8List c, Uint8List ss, Uint8List pk) {
 int crypto_kem_dec(Uint8List ss, Uint8List c, Uint8List sk) {
   // extraer pk, hashPk, z desde sk
   Uint8List pk = sk.sublist(KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES, KYBER_SECRETKEYBYTES - KYBER_SYMBYTES);
-  Uint8List hashPk = sk.sublist(KYBER_SECRETKEYBYTES - KYBER_SYMBYTES, KYBER_SECRETKEYBYTES);
+ // Uint8List hashPk = sk.sublist(KYBER_SECRETKEYBYTES - KYBER_SYMBYTES, KYBER_SECRETKEYBYTES);
   Uint8List z = sk.sublist(KYBER_SECRETKEYBYTES - 2*KYBER_SYMBYTES, KYBER_SECRETKEYBYTES - KYBER_SYMBYTES*2 + KYBER_SYMBYTES);
 
   // m' = indcpa_dec(c, sk)

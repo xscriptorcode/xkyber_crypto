@@ -9,7 +9,6 @@
 //
 // Si se desea la lógica real, ignorar este archivo y usar crypto_kem_{keypair,enc,dec} del KEM.
 
-import 'dart:typed_data';
 import 'package:xkyber_crypto/polynomial.dart';
 import 'package:xkyber_crypto/modular_arithmetic.dart';
 import 'package:xkyber_crypto/kyber_keypair.dart';
