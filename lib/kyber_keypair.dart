@@ -1,8 +1,7 @@
 // kyber_keypair.dart
 //
-// Ahora que tenemos la lógica completa en kem.dart/indcpa.dart, generaremos la keypair real.
-// Esto es un ejemplo, ya que Kyber realmente no devuelve polinomios aquí, sino pk/sk en bytes.
-// Ajustaremos para que devuelva pk y sk en bytes, al estilo real de Kyber.
+// Now that we have the complete logic in kem.dart/indcpa.dart, we generate the real keypair.
+// We will adjust it to return pk and sk in bytes, like the real Kyber.
 
 import 'dart:typed_data';
 import 'params.dart';
@@ -17,7 +16,7 @@ class KyberKeyPair {
   factory KyberKeyPair.generate() {
     Uint8List pk = Uint8List(KYBER_PUBLICKEYBYTES);
     Uint8List sk = Uint8List(KYBER_SECRETKEYBYTES);
-    crypto_kem_keypair(pk, sk);
+    cryptokemkeypair(pk, sk);
     return KyberKeyPair._(pk, sk);
   }
 }

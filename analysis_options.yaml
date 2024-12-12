@@ -14,6 +14,8 @@ linter:
     use_function_type_syntax_for_parameters: true # Usa la sintaxis de tipo de función para los parámetros.
 
 analyzer:
+  errors:
+    file_names: ignore
   strong-mode:
     implicit-casts: false   # Evita conversiones implícitas entre tipos.
     implicit-dynamic: false # Exige declarar tipos explícitos en lugar de usar 'dynamic' implícito.

@@ -1,21 +1,21 @@
 // verify.dart
 //
-// Este archivo proporciona funciones para realizar ciertas operaciones
-// en tiempo constante, evitando filtraciones de información a través
-// de canales laterales como el tiempo de ejecución.
+// This file provides functions to perform certain operations
+// in constant time, avoiding information leakage through
+// side channels such as execution time.
 //
-// Estas funciones son críticas para la seguridad de Kyber en su modo IND-CCA2,
-// ya que garantizan que la respuesta del descifrado no dependa de diferencias
-// sutiles cuando la entrada es incorrecta.
+// These functions are critical for the security of Kyber in its IND-CCA2
+// mode, since they ensure that the response of the decryption does not
+// depend on subtle differences when the input is incorrect.
 //
-// "verify" compara dos vectores de bytes en tiempo constante.
-// "cmov" copia condicionalmente un vector en otro, también en tiempo constante.
+// "verify" compares two byte arrays in constant time.
+// "cmov" conditionally copies a vector to another, also in constant time.
 
 import 'dart:typed_data';
 
-/// Compara dos arreglos de bytes [a] y [b] en tiempo constante.
-/// Retorna `true` si son idénticos, `false` en caso contrario.
-/// Esta función evita atajos de tiempo (early exits) que podrían filtrar información.
+/// Compares two byte arrays [a] and [b] in constant time.
+/// Returns `true` if they are identical, `false` otherwise.
+/// This function avoids early exits that could leak information.
 bool verify(Uint8List a, Uint8List b) {
   if (a.length != b.length) return false;
   int r = 0;
@@ -25,18 +25,18 @@ bool verify(Uint8List a, Uint8List b) {
   return r == 0;
 }
 
-/// Copia el contenido de [x] en [r] si [b] es 1, de lo contrario no hace nada.
-/// La operación se realiza en tiempo constante, sin que su tiempo varíe
-/// en función de los datos, sólo de la longitud.
+/// Copies the contents of [x] to [r] if [b] is 1, otherwise does nothing.
+/// The operation is performed in constant time, without its time varying
+/// depending on the data, only on the length.
 ///
-/// - [r]: buffer de destino.
-/// - [x]: buffer de origen.
-/// - [len]: cantidad de bytes a copiar.
-/// - [b]: bit de control (0 o 1).
+/// - [r]: destination buffer.
+/// - [x]: source buffer.
+/// - [len]: amount of bytes to copy.
+/// - [b]: control bit (0 or 1).
 void cmov(Uint8List r, Uint8List x, int len, int b) {
-  // Si b=1, debemos copiar x en r.
-  // Si b=0, no copiamos nada.
-  // Convertimos b a -b & 0xFF para crear una máscara completa si b=1.
+  // If b=1, we need to copy x into r.
+  // If b=0, we don't copy anything.
+  // Convert b to -b & 0xFF to create a full mask if b=1.
   b = -b & 0xFF;
   for (int i = 0; i < len; i++) {
     r[i] ^= b & (r[i] ^ x[i]);

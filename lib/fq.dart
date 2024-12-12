@@ -1,6 +1,6 @@
 // fq.dart
 //
-// Operaciones en el campo mod q.
+// Operations in the field modulo q.
 
 import 'params.dart';
 

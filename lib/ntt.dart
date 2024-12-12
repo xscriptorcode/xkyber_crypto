@@ -1,23 +1,23 @@
 /* ntt.dart
 
- Implementación de la NTT (Number Theoretic Transform) y su inversa (iNTT) para Kyber.
- Esta implementación sigue la lógica y parámetros utilizados en las referencias oficiales.
- Basado en PQClean y la documentación de Kyber.
+ Implementation of the Number Theoretic Transform (NTT) and its inverse (iNTT) for Kyber.
+ This implementation follows the logic and parameters used in the official references.
+ Based on PQClean and the Kyber documentation.
  
- Parámetros (para Kyber512):
+ Parameters (for Kyber512):
  - n = 256
  - q = 3329
 
- La NTT se realiza usando un conjunto precomputado de raíces de la unidad (`zetas`).
- La iNTT se realiza con las mismas `zetas` en orden inverso, y finalmente se multiplica
- cada coeficiente por el inverso de n modulo q para normalizar.
+ The NTT is performed using a precomputed set of roots of unity (`zetas`).
+ The iNTT is performed with the same `zetas` in reverse order, and finally each coefficient is multiplied
+ by the inverse of n modulo q for normalization.
 */
 const int q = 3329;
 const int n = 256;
 
-// Zetas precomputadas para la NTT en Kyber512.
-// Tomadas de PQClean.
-const List<int> zetas = [
+// Precomputed zetas for the NTT in Kyber512.
+// Taken from PQClean.
+const List<int> zetas = <int>[
   2285, 2571,  880,  913, 2439,  360,  501, 1326,
    147, 2187, 1477, 1188, 2051, 1562,  893,  624,
   2105, 2199,  318, 1968, 1296,  278, 2381, 2246,
@@ -61,9 +61,9 @@ int modPow(int base, int exp, int modulus) {
   return result;
 }
 
-/// Calculamos nInv una sola vez:
+/// Calculate nInv once:
 /// nInv = 256^(q-2) mod q
-/// Según PQClean, nInv = 256^{-1} mod q = 3293 para q=3329.
+/// According to PQClean, nInv = 256^{-1} mod q = 3293 for q=3329.
 final int nInv = modPow(n, q - 2, q);
 
 List<int> ntt(List<int> poly) {
@@ -85,55 +85,57 @@ List<int> ntt(List<int> poly) {
 }
 
 List<int> invntt(List<int> a) {
-  // iNTT usando zetas en orden inverso
-  // Orden inverso tomado de PQClean
-  // zetas_inv se obtiene invirtiendo el orden y multiplicando por -1 donde corresponda.
+  // iNTT using zetas in reverse order
+  // Reverse order taken from PQClean
+  // zetas_inv is obtained by reversing the order and multiplying by -1 where applicable.
   
   List<int> r = List<int>.from(a);
 
-  // Para la iNTT, debemos usar las zetas en orden inverso.
-  // PQClean define una secuencia de zetas inversas. Para simplificar aquí, asumimos que ya las conocemos.
-  // Lo recomendable es usar la secuencia tal cual PQClean: kyber512/clean/ntt.c (invntt).
+  // For the iNTT, we need to use the zetas in reverse order.
+  // PQClean defines an inverse sequence of zetas. To simplify, we assume we already know them.
+  // The recommended approach is to use the sequence from PQClean: kyber512/clean/ntt.c (invntt).
   
-  // Secuencia inversa: se aplica el paso inverso:
-  // Este código está simplificado. En la implementación real, se usan las zetas inversas precomputadas.
-  // Aquí replicaremos la lógica de PQClean kyber512:
+  // Inverse sequence: apply the inverse step:
+  // This code is simplified. In the real implementation, precomputed inverse zetas are used.
+  // Here we replicate the logic from PQClean kyber512:
   
-  // PQClean iNTT loop (ver ntt.c en PQClean):
+  // PQClean iNTT loop (see ntt.c in PQClean):
   int k = 0;
-  // Inverso de la operación NTT:
-  // Los zetas se aplican en orden inverso al forward NTT.
+  // Inverse of the NTT operation:
+  // The zetas are applied in reverse order compared to the forward NTT.
 
-  // Debemos reconstruir el orden inverso de las zetas. En la implementación real,
-  // se usa un array separado o se calcula a partir de zetas.
-  // Por sencillez, aquí mostraremos una lógica más directa tomando referencia de PQClean.
+  // We must reconstruct the inverse order of the zetas. In the real implementation,
+  // a separate array is used or calculated from the zetas.
+  // For simplicity, we will show a more direct logic taking reference from PQClean.
 
-  // Referencia: PQClean kyber512 iNTT code:
-  // (Aquí se pega la lógica iNTT de PQClean)
+  // Reference: PQClean kyber512 iNTT code:
+  // (Here we paste the iNTT logic from PQClean)
   
-  // Sin reproducir todo el código fuente de PQClean, daremos una aproximación:
-  // Sugerencia: adaptar exactamente el iNTT de PQClean:
+  // Without reproducing all the source code from PQClean, we will give an approximation:
+  // Suggestion: adapt exactly the iNTT from PQClean:
   
-  // Para ser completamente fiel, tomar el código de iNTT de PQClean (kyber512):
+  // To be completely faithful, take the iNTT code from PQClean (kyber512):
   // https://github.com/pqclean/pqclean/blob/master/crypto_kem/kyber512/clean/ntt.c
   
-  // iNTT PQClean (extracto simplificado):
-  // Nota: Esto es una trascripción de la lógica iNTT:
+  // iNTT PQClean (simplified excerpt):
+  // Note: This is a transcription of the iNTT logic:
   
-  // Constantes tomadas de la implementación iNTT en PQClean:
-  // Se aplican las mariposas en sentido inverso y se multiplican por las zetas correspondientes en orden inverso.
+  // Constants taken from the iNTT implementation in PQClean:
+  // The butterflies are applied in reverse order and multiplied by the corresponding zetas in reverse order.
   
-  // Por razones de espacio, mostraremos el código final directamente:
+  // For space reasons, we will show the final code directly:
 
-  // Este código es una adaptación de PQClean:
-  // int start = 0;
+  // This code is an adaptation of PQClean:
+  // using the standard
+  // ignore: unused_local_variable
+  int start = 0;
   for (int step = 2; step <= 128; step <<= 1) {
     for (int i = 0; i < n; i += 2 * step) {
       for (int j = i; j < i + step; j++) {
         int u = r[j];
         int v = r[j+step];
         
-        // zetaIndex calc según iNTT orden inverso:
+        // zetaIndex calculation according to reverse iNTT order:
         int zetaIndex = zetas.length - 1 - k;
         r[j] = modAdd(u, v, q);
         r[j+step] = modSub(u, v, q);
@@ -143,7 +145,7 @@ List<int> invntt(List<int> a) {
     }
   }
 
-  // Finalmente multiplicar por nInv
+  // Finally multiply by nInv
   for (int i = 0; i < n; i++) {
     r[i] = modMul(r[i], nInv, q);
   }

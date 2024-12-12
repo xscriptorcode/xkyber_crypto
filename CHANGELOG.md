@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.6] - 2024-12-12
+### Update
+- Example file updated, upgrade documentation to complete use of the library.
+### Added
+- New Dart files should follow the official conventions for Kyber implementation.
+
 ## [1.0.5] - 2024-12-12
 ### Update
 - Update example and Readme.md
