@@ -39,7 +39,7 @@ class XKyberCrypto {
       nonce: nonce,
     );
 
-    final Uint8List combined = Uint8List.fromList([
+    final Uint8List combined = Uint8List.fromList(<int>[
       ...nonce,
       ...secretBox.cipherText,
       ...secretBox.mac.bytes,
