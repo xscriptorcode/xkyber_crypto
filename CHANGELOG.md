@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.0.6] - 2024-12-12
+## [1.0.8] - 2024-12-22
+### Update
+- xkyber_symmetric.dart to make easy the implementation
+
+## [1.0.7] - 2024-12-12
 ### Update
 - Example file updated, upgrade documentation to complete use of the library.
 ### Added
