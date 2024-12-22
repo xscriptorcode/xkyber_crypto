@@ -24,7 +24,6 @@ class Poly {
   Poly() : coeffs = List<int>.filled(KYBER_N, 0);
 }
 
-
 /// Generates a pseudorandom polynomial from a seed and nonce using SHAKE128
 /// and CBD (Centered Binomial Distribution). The output is a polynomial with
 /// coefficients in the range [-(q-1)/2, (q-1)/2].
@@ -70,11 +69,11 @@ void polygetnoise(Poly r, Uint8List seed, int nonce) {
 void cbd(Poly r, Uint8List buf) {
   // η=2 for Kyber512
   for (int i = 0; i < KYBER_N ~/ 8; i++) {
-    int t = buf[2*i] | (buf[2*i+1] << 8);
+    int t = buf[2 * i] | (buf[2 * i + 1] << 8);
     for (int j = 0; j < 8; j++) {
       int aj = (t >> j) & 1;
-      int bj = (t >> (j+8)) & 1;
-      r.coeffs[8*i+j] = aj - bj;
+      int bj = (t >> (j + 8)) & 1;
+      r.coeffs[8 * i + j] = aj - bj;
     }
   }
 }
@@ -96,7 +95,6 @@ Uint8List polytobytes(Poly a) {
   return r;
 }
 
-
 /// Deserializes a polynomial from a byte array representation.
 ///
 /// This function takes a byte array `r` and interprets it as a sequence of
@@ -107,7 +105,7 @@ Uint8List polytobytes(Poly a) {
 Poly polyfrombytes(Uint8List r) {
   Poly a = Poly();
   for (int i = 0; i < KYBER_N; i++) {
-    a.coeffs[i] = r[2*i] | (r[2*i+1] << 8);
+    a.coeffs[i] = r[2 * i] | (r[2 * i + 1] << 8);
   }
   return a;
 }
@@ -117,7 +115,7 @@ Poly polyfrombytes(Uint8List r) {
 /// This function takes a polynomial `a` and reduces its coefficients before
 /// compressing them into a compact byte array format. The polynomial is processed
 /// in chunks of four coefficients, each being mapped to a 10-bit value. These
-/// values are packed into a sequence of bytes, with five bytes encoding four 
+/// values are packed into a sequence of bytes, with five bytes encoding four
 /// coefficients. The resulting byte array is suitable for storage or transmission
 /// in applications where space efficiency is critical.
 ///
@@ -129,16 +127,16 @@ Uint8List polycompress(Poly a) {
   int pos = 0;
   for (int i = 0; i < KYBER_N; i += 4) {
     int d0 = ((t.coeffs[i] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
-    int d1 = ((t.coeffs[i+1] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
-    int d2 = ((t.coeffs[i+2] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
-    int d3 = ((t.coeffs[i+3] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
+    int d1 = ((t.coeffs[i + 1] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
+    int d2 = ((t.coeffs[i + 2] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
+    int d3 = ((t.coeffs[i + 3] << 10) + (KYBER_Q >> 1)) ~/ KYBER_Q & 0x3FF;
 
     int packed = d0 | (d1 << 10) | (d2 << 20) | ((d3 & 0x3F) << 30);
-    r[pos]   = packed & 0xFF;
-    r[pos+1] = (packed >> 8) & 0xFF;
-    r[pos+2] = (packed >> 16) & 0xFF;
-    r[pos+3] = (packed >> 24) & 0xFF;
-    r[pos+4] = (d3 >> 6) & 0xFF;
+    r[pos] = packed & 0xFF;
+    r[pos + 1] = (packed >> 8) & 0xFF;
+    r[pos + 2] = (packed >> 16) & 0xFF;
+    r[pos + 3] = (packed >> 24) & 0xFF;
+    r[pos + 4] = (d3 >> 6) & 0xFF;
     pos += 5;
   }
   return r;
@@ -159,29 +157,30 @@ Poly polydecompress(Uint8List r) {
   Poly a = Poly();
   int pos = 0;
   for (int i = 0; i < KYBER_N; i += 4) {
-    int t0 = r[pos] | (r[pos+1]<<8) | (r[pos+2]<<16) | (r[pos+3]<<24);
-    int t1 = r[pos+4];
+    int t0 =
+        r[pos] | (r[pos + 1] << 8) | (r[pos + 2] << 16) | (r[pos + 3] << 24);
+    int t1 = r[pos + 4];
     pos += 5;
     int d0 = t0 & 0x3FF;
     int d1 = (t0 >> 10) & 0x3FF;
     int d2 = (t0 >> 20) & 0x3FF;
-    int d3 = ((t0 >> 30) & 0x03F) | ((t1 & 0xFF)<<6);
+    int d3 = ((t0 >> 30) & 0x03F) | ((t1 & 0xFF) << 6);
 
-    a.coeffs[i]   = (d0 * KYBER_Q + (1<<9)) >> 10;
-    a.coeffs[i+1] = (d1 * KYBER_Q + (1<<9)) >> 10;
-    a.coeffs[i+2] = (d2 * KYBER_Q + (1<<9)) >> 10;
-    a.coeffs[i+3] = (d3 * KYBER_Q + (1<<9)) >> 10;
+    a.coeffs[i] = (d0 * KYBER_Q + (1 << 9)) >> 10;
+    a.coeffs[i + 1] = (d1 * KYBER_Q + (1 << 9)) >> 10;
+    a.coeffs[i + 2] = (d2 * KYBER_Q + (1 << 9)) >> 10;
+    a.coeffs[i + 3] = (d3 * KYBER_Q + (1 << 9)) >> 10;
   }
   return a;
 }
 
 /// Applies the Number Theoretic Transform (NTT) to a polynomial `a` in-place.
-/// 
+///
 /// This function transforms the input polynomial `a` to the NTT domain using
 /// the precomputed roots of unity (`zetas`). The coefficients of the polynomial
 /// are modified in-place to reflect the NTT transformation, which is useful
 /// for efficient polynomial multiplication.
-/// 
+///
 /// - Parameter a: The input polynomial to be transformed.
 void polyntt(Poly a) {
   a.coeffs = ntt(a.coeffs);
@@ -212,8 +211,8 @@ Poly polybasemul(Poly a, Poly b) {
 
 /// Returns a new polynomial `r` which is the component-wise sum of polynomials `a` and `b`.
 ///
-/// This function iterates over all coefficients in the polynomials `a` and `b`, 
-/// adding corresponding coefficients together using modular addition. 
+/// This function iterates over all coefficients in the polynomials `a` and `b`,
+/// adding corresponding coefficients together using modular addition.
 /// The result is a new polynomial `r` where each coefficient `r[i]` is computed as:
 /// `r[i] = a[i] + b[i] mod q`.
 ///
@@ -258,10 +257,10 @@ Poly polyreduce(Poly a) {
 /// of 8 bits, where each bit is mapped to a coefficient in the polynomial `p`.
 /// If the bit is set (1), the corresponding coefficient in `p` is set to
 /// `KYBER_Q / 2`. If the bit is not set (0), the coefficient is set to 0.
-/// 
+///
 /// The message `msg` is expected to have `KYBER_SYMBYTES` bytes, resulting
 /// in a polynomial `p` with coefficients that encode the message.
-/// 
+///
 /// - Parameters:
 ///   - p: The polynomial to be populated with coefficients based on the message.
 ///   - msg: A byte array representing the message to be encoded into the polynomial.
@@ -269,7 +268,7 @@ void polyfrommsg(Poly p, Uint8List msg) {
   for (int i = 0; i < KYBER_SYMBYTES; i++) {
     for (int j = 0; j < 8; j++) {
       int bit = (msg[i] >> j) & 1;
-      p.coeffs[8*i+j] = bit * (KYBER_Q ~/ 2);
+      p.coeffs[8 * i + j] = bit * (KYBER_Q ~/ 2);
     }
   }
 }
@@ -287,9 +286,9 @@ void polytomsg(Uint8List msg, Poly p) {
   for (int i = 0; i < KYBER_SYMBYTES; i++) {
     msg[i] = 0;
     for (int j = 0; j < 8; j++) {
-      int t = p.coeffs[8*i+j];
+      int t = p.coeffs[8 * i + j];
       t = (t + (KYBER_Q ~/ 2)) % KYBER_Q;
-      int bit = ( (2*t) ~/ KYBER_Q ) & 1;
+      int bit = ((2 * t) ~/ KYBER_Q) & 1;
       msg[i] |= (bit << j);
     }
   }
@@ -330,7 +329,7 @@ void polyuniform(Poly a, Uint8List seed, int nonce) {
 
     int pos = 0;
     while (pos + 3 <= buf.length && ctr < KYBER_N) {
-      int t = (buf[pos] | (buf[pos+1]<<8) | (buf[pos+2]<<16)) & 0xFFF;
+      int t = (buf[pos] | (buf[pos + 1] << 8) | (buf[pos + 2] << 16)) & 0xFFF;
       if (t < KYBER_Q) {
         a.coeffs[ctr++] = t;
       }

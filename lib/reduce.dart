@@ -13,6 +13,7 @@
 // For q=3329, QINV=62209 according to the reference implementation.
 
 import 'params.dart';
+
 // follows the parameter convention in the specification
 // ignore: constant_identifier_names
 const int QINV = 62209; // -q^{-1} mod 2^16 para q=3329
@@ -25,7 +26,7 @@ int barrettreduce(int a) {
   //
   // Formula: a' = a - floor(a * v / 2^26) * q
   // where v = floor((2^26 + q/2)/q)
-  
+
   const int v = ((1 << 26) + (KYBER_Q >> 1)) ~/ KYBER_Q;
   int t = (v * a) >> 26;
   t *= KYBER_Q;
@@ -39,7 +40,7 @@ int montgomeryreduce(int a) {
   // u = a * QINV mod 2^16
   // t = (a - u*q) >> 16
   // returns t in [0,q-1] if a < q*2^16
-  
+
   int u = (a * QINV) & 0xFFFF; // sólo tomar los 16 bits bajos
   int t = a - u * KYBER_Q;
   t >>= 16;

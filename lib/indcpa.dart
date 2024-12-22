@@ -6,20 +6,20 @@ import 'poly.dart';
 import 'polyvec.dart';
 import 'shake.dart';
 import 'randombytes.dart';
-import 'gen_matrix.dart';  // Import donde está genMatrix
+import 'gen_matrix.dart'; // Import donde está genMatrix
 
 void indcpakeypair(Uint8List pk, Uint8List sk) {
   Uint8List seed = randombytes(KYBER_SYMBYTES);
-  Uint8List seedbuf = shake128(seed, KYBER_SYMBYTES*2);
+  Uint8List seedbuf = shake128(seed, KYBER_SYMBYTES * 2);
   Uint8List publicseed = seedbuf.sublist(0, KYBER_SYMBYTES);
-  Uint8List noiseseed = seedbuf.sublist(KYBER_SYMBYTES, 2*KYBER_SYMBYTES);
+  Uint8List noiseseed = seedbuf.sublist(KYBER_SYMBYTES, 2 * KYBER_SYMBYTES);
 
   List<List<Poly>> A = genMatrix(publicseed, false);
   PolyVec s = PolyVec();
   PolyVec e = PolyVec();
   for (int i = 0; i < KYBER_K; i++) {
     polygetnoise(s.vec[i], noiseseed, i);
-    polygetnoise(e.vec[i], noiseseed, i+KYBER_K);
+    polygetnoise(e.vec[i], noiseseed, i + KYBER_K);
   }
 
   polyvecntt(s);
@@ -54,8 +54,10 @@ void indcpakeypair(Uint8List pk, Uint8List sk) {
 }
 
 void indcpaenc(Uint8List c, Uint8List m, Uint8List pk, Uint8List coins) {
-  Uint8List publicseed = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES, KYBER_POLYVECCOMPRESSEDBYTES+KYBER_SYMBYTES);
-  PolyVec pkvec = polyvecdecompress(pk.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES));
+  Uint8List publicseed = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES,
+      KYBER_POLYVECCOMPRESSEDBYTES + KYBER_SYMBYTES);
+  PolyVec pkvec =
+      polyvecdecompress(pk.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES));
 
   List<List<Poly>> at = genMatrix(publicseed, true);
 
@@ -64,9 +66,9 @@ void indcpaenc(Uint8List c, Uint8List m, Uint8List pk, Uint8List coins) {
   Poly e2 = Poly();
   for (int i = 0; i < KYBER_K; i++) {
     polygetnoise(r.vec[i], coins, i);
-    polygetnoise(e1.vec[i], coins, i+KYBER_K);
+    polygetnoise(e1.vec[i], coins, i + KYBER_K);
   }
-  polygetnoise(e2, coins, 2*KYBER_K);
+  polygetnoise(e2, coins, 2 * KYBER_K);
 
   polyvecntt(r);
 

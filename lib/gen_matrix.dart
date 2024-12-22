@@ -13,7 +13,6 @@ import 'dart:typed_data';
 import 'params.dart';
 import 'poly.dart';
 
-
 List<List<Poly>> genMatrix(Uint8List seed, bool transposed) {
   List<List<Poly>> A = List<List<Poly>>.generate(
     KYBER_K,

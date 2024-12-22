@@ -22,7 +22,8 @@ Future<String> encryptData(String data, SecretKey secretKey) async {
     secretKey: secretKey,
     nonce: nonce,
   );
-  final combined = Uint8List.fromList([...nonce, ...secretBox.cipherText, ...secretBox.mac.bytes]);
+  final combined = Uint8List.fromList(
+      [...nonce, ...secretBox.cipherText, ...secretBox.mac.bytes]);
   return base64Encode(combined);
 }
 
@@ -32,7 +33,8 @@ Future<String> decryptData(String encryptedData, SecretKey secretKey) async {
   final decoded = base64Decode(encryptedData);
 
   final nonce = decoded.sublist(0, algorithm.nonceLength);
-  final cipherText = decoded.sublist(algorithm.nonceLength, decoded.length - 16);
+  final cipherText =
+      decoded.sublist(algorithm.nonceLength, decoded.length - 16);
   final macBytes = decoded.sublist(decoded.length - 16);
   final mac = Mac(macBytes);
 

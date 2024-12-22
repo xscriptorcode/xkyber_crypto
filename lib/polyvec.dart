@@ -31,7 +31,8 @@ Uint8List polyvectobytes(PolyVec v) {
 PolyVec polyvecfrombytes(Uint8List r) {
   PolyVec v = PolyVec();
   for (int i = 0; i < KYBER_K; i++) {
-    v.vec[i] = polyfrombytes(r.sublist(i * KYBER_POLYBYTES, (i + 1) * KYBER_POLYBYTES));
+    v.vec[i] = polyfrombytes(
+        r.sublist(i * KYBER_POLYBYTES, (i + 1) * KYBER_POLYBYTES));
   }
   return v;
 }
@@ -41,7 +42,8 @@ Uint8List polyveccompress(PolyVec v) {
   Uint8List r = Uint8List(KYBER_POLYVECCOMPRESSEDBYTES);
   for (int i = 0; i < KYBER_K; i++) {
     Uint8List t = polycompress(v.vec[i]);
-    r.setRange(i * KYBER_POLYCOMPRESSEDBYTES, (i + 1) * KYBER_POLYCOMPRESSEDBYTES, t);
+    r.setRange(
+        i * KYBER_POLYCOMPRESSEDBYTES, (i + 1) * KYBER_POLYCOMPRESSEDBYTES, t);
   }
   return r;
 }
@@ -50,7 +52,8 @@ Uint8List polyveccompress(PolyVec v) {
 PolyVec polyvecdecompress(Uint8List r) {
   PolyVec v = PolyVec();
   for (int i = 0; i < KYBER_K; i++) {
-    v.vec[i] = polydecompress(r.sublist(i * KYBER_POLYCOMPRESSEDBYTES, (i + 1) * KYBER_POLYCOMPRESSEDBYTES));
+    v.vec[i] = polydecompress(r.sublist(
+        i * KYBER_POLYCOMPRESSEDBYTES, (i + 1) * KYBER_POLYCOMPRESSEDBYTES));
   }
   return v;
 }

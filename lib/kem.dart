@@ -41,7 +41,8 @@ int cryptokemkeypair(Uint8List pk, Uint8List sk) {
 
   // store pk at the end of sk
   for (int i = 0; i < KYBER_PUBLICKEYBYTES; i++) {
-    sk[KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES + i] = pk[i];
+    sk[KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES + i] =
+        pk[i];
   }
 
   // hash(pk)
@@ -56,7 +57,7 @@ int cryptokemkeypair(Uint8List pk, Uint8List sk) {
   Uint8List z = randombytes(KYBER_SYMBYTES);
   // store z at the end of sk
   for (int i = 0; i < KYBER_SYMBYTES; i++) {
-    sk[KYBER_SECRETKEYBYTES - KYBER_SYMBYTES*2 + i] = z[i];
+    sk[KYBER_SECRETKEYBYTES - KYBER_SYMBYTES * 2 + i] = z[i];
   }
 
   return 0;
@@ -78,7 +79,7 @@ int cryptokemenc(Uint8List c, Uint8List ss, Uint8List pk) {
   // coins = shake(K || mh)
   Uint8List coinsInput = Uint8List(KYBER_SYMBYTES + KYBER_SYMBYTES);
   coinsInput.setRange(0, KYBER_SYMBYTES, K);
-  coinsInput.setRange(KYBER_SYMBYTES, 2*KYBER_SYMBYTES, mh);
+  coinsInput.setRange(KYBER_SYMBYTES, 2 * KYBER_SYMBYTES, mh);
   Uint8List coins = shake128(coinsInput, KYBER_SYMBYTES);
 
   // c = indcpaenc(mh, pk, coins)
@@ -87,7 +88,7 @@ int cryptokemenc(Uint8List c, Uint8List ss, Uint8List pk) {
   // ss = shake(K || c)
   Uint8List ssInput = Uint8List(KYBER_SYMBYTES + KYBER_CIPHERTEXTBYTES);
   ssInput.setRange(0, KYBER_SYMBYTES, K);
-  ssInput.setRange(KYBER_SYMBYTES, KYBER_SYMBYTES+KYBER_CIPHERTEXTBYTES, c);
+  ssInput.setRange(KYBER_SYMBYTES, KYBER_SYMBYTES + KYBER_CIPHERTEXTBYTES, c);
   Uint8List out = shake128(ssInput, KYBER_SSBYTES);
   ss.setAll(0, out);
 
@@ -96,9 +97,12 @@ int cryptokemenc(Uint8List c, Uint8List ss, Uint8List pk) {
 
 int cryptokemdec(Uint8List ss, Uint8List c, Uint8List sk) {
   // extract pk, hashPk, z from sk
-  Uint8List pk = sk.sublist(KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES, KYBER_SECRETKEYBYTES - KYBER_SYMBYTES);
- // Uint8List hashPk = sk.sublist(KYBER_SECRETKEYBYTES - KYBER_SYMBYTES, KYBER_SECRETKEYBYTES);
-  Uint8List z = sk.sublist(KYBER_SECRETKEYBYTES - 2*KYBER_SYMBYTES, KYBER_SECRETKEYBYTES - KYBER_SYMBYTES*2 + KYBER_SYMBYTES);
+  Uint8List pk = sk.sublist(
+      KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES,
+      KYBER_SECRETKEYBYTES - KYBER_SYMBYTES);
+  // Uint8List hashPk = sk.sublist(KYBER_SECRETKEYBYTES - KYBER_SYMBYTES, KYBER_SECRETKEYBYTES);
+  Uint8List z = sk.sublist(KYBER_SECRETKEYBYTES - 2 * KYBER_SYMBYTES,
+      KYBER_SECRETKEYBYTES - KYBER_SYMBYTES * 2 + KYBER_SYMBYTES);
 
   // m' = indcpadec(c, sk)
   Uint8List mprime = Uint8List(KYBER_SYMBYTES);
@@ -107,13 +111,13 @@ int cryptokemdec(Uint8List ss, Uint8List c, Uint8List sk) {
   // K' = hash(m' || pk)
   Uint8List kpInput = Uint8List(KYBER_SYMBYTES + KYBER_PUBLICKEYBYTES);
   kpInput.setRange(0, KYBER_SYMBYTES, mprime);
-  kpInput.setRange(KYBER_SYMBYTES, KYBER_SYMBYTES+KYBER_PUBLICKEYBYTES, pk);
+  kpInput.setRange(KYBER_SYMBYTES, KYBER_SYMBYTES + KYBER_PUBLICKEYBYTES, pk);
   Uint8List kprime = shake128(kpInput, KYBER_SYMBYTES);
 
   // coins' = hash(K' || m')
   Uint8List coinsInput = Uint8List(KYBER_SYMBYTES + KYBER_SYMBYTES);
   coinsInput.setRange(0, KYBER_SYMBYTES, kprime);
-  coinsInput.setRange(KYBER_SYMBYTES, 2*KYBER_SYMBYTES, mprime);
+  coinsInput.setRange(KYBER_SYMBYTES, 2 * KYBER_SYMBYTES, mprime);
   Uint8List coinsPrime = shake128(coinsInput, KYBER_SYMBYTES);
 
   // c' = indcpaenc(m', pk, coins')
@@ -130,8 +134,8 @@ int cryptokemdec(Uint8List ss, Uint8List c, Uint8List sk) {
   } else {
     ssInput.setRange(0, KYBER_SYMBYTES, z);
   }
-  ssInput.setRange(KYBER_SYMBYTES, KYBER_SYMBYTES+KYBER_CIPHERTEXTBYTES, c);
-  
+  ssInput.setRange(KYBER_SYMBYTES, KYBER_SYMBYTES + KYBER_CIPHERTEXTBYTES, c);
+
   Uint8List out = shake128(ssInput, KYBER_SSBYTES);
   ss.setAll(0, out);
 

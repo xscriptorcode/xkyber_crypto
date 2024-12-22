@@ -10,7 +10,6 @@ int fqadd(int a, int b) {
   return r;
 }
 
-
 int fqsub(int a, int b) {
   int r = a - b;
   if (r < 0) r += KYBER_Q;

@@ -13,5 +13,6 @@ import 'dart:typed_data';
 /// Uses `Random.secure()` to obtain system entropy.
 Uint8List randombytes(int length) {
   final Random rnd = Random.secure();
-  return Uint8List.fromList(List<int>.generate(length, (_) => rnd.nextInt(256)));
+  return Uint8List.fromList(
+      List<int>.generate(length, (_) => rnd.nextInt(256)));
 }

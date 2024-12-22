@@ -2,7 +2,6 @@
 
 import 'dart:typed_data';
 
-
 /// Implementation of SHAKE128 (XOF) based on Keccak as defined in FIPS 202.
 /// SHAKE128 allows generating an output of arbitrary length from an input.
 ///
@@ -24,7 +23,7 @@ class SHAKE128 {
   // Internal state of Keccak: 25 words of 64 bits = 200 bytes.
   final Uint64List _state = Uint64List(25);
 
-  bool _squeezing = false; 
+  bool _squeezing = false;
   final Uint8List _buffer = Uint8List(_rate);
   int _bufferPos = 0;
 
@@ -33,7 +32,8 @@ class SHAKE128 {
   /// Absorbs data into the state. Can be called multiple times before finalizing.
   void absorb(Uint8List input) {
     if (_squeezing) {
-      throw StateError("No se puede absorber después de comenzar el 'squeeze'.");
+      throw StateError(
+          "No se puede absorber después de comenzar el 'squeeze'.");
     }
 
     int offset = 0;
@@ -87,7 +87,8 @@ class SHAKE128 {
       if (toCopy > length - offset) {
         toCopy = length - offset;
       }
-      output.setRange(offset, offset + toCopy, _buffer.sublist(_bufferPos, _bufferPos + toCopy));
+      output.setRange(offset, offset + toCopy,
+          _buffer.sublist(_bufferPos, _bufferPos + toCopy));
       _bufferPos += toCopy;
       offset += toCopy;
     }
@@ -114,16 +115,16 @@ class SHAKE128 {
     _keccakf();
   }
 
-/// Extracts a block of data from the internal state into the provided buffer.
-///
-/// This function writes `_rate` bits (divided by 8 to convert to bytes) 
-/// of the internal state into the `block` buffer, starting at index 0. 
-/// The state is stored as 64-bit integers, and each integer is written 
-/// into the buffer using the `_store64` function. This is typically used 
-/// after the permutation function to retrieve the block of data for output.
-///
-/// - [block]: The buffer into which the block of data is extracted. It is 
-///   assumed to be large enough to hold the extracted data.
+  /// Extracts a block of data from the internal state into the provided buffer.
+  ///
+  /// This function writes `_rate` bits (divided by 8 to convert to bytes)
+  /// of the internal state into the `block` buffer, starting at index 0.
+  /// The state is stored as 64-bit integers, and each integer is written
+  /// into the buffer using the `_store64` function. This is typically used
+  /// after the permutation function to retrieve the block of data for output.
+  ///
+  /// - [block]: The buffer into which the block of data is extracted. It is
+  ///   assumed to be large enough to hold the extracted data.
   void _extractBlock(Uint8List block) {
     for (int i = 0; i < _rate ~/ 8; i++) {
       _store64(block, 8 * i, _state[i]);
@@ -139,14 +140,14 @@ class SHAKE128 {
   /// The value is loaded in little-endian (the least significant byte
   /// is stored at the lowest index position).
   static int _load64(Uint8List x, int offset) {
-    return (x[offset + 0] & 0xFF)
-        | ((x[offset + 1] & 0xFF) << 8)
-        | ((x[offset + 2] & 0xFF) << 16)
-        | ((x[offset + 3] & 0xFF) << 24)
-        | ((x[offset + 4] & 0xFF) << 32)
-        | ((x[offset + 5] & 0xFF) << 40)
-        | ((x[offset + 6] & 0xFF) << 48)
-        | ((x[offset + 7] & 0xFF) << 56);
+    return (x[offset + 0] & 0xFF) |
+        ((x[offset + 1] & 0xFF) << 8) |
+        ((x[offset + 2] & 0xFF) << 16) |
+        ((x[offset + 3] & 0xFF) << 24) |
+        ((x[offset + 4] & 0xFF) << 32) |
+        ((x[offset + 5] & 0xFF) << 40) |
+        ((x[offset + 6] & 0xFF) << 48) |
+        ((x[offset + 7] & 0xFF) << 56);
   }
 
   /// Stores a 64-bit integer value in 8 consecutive bytes in the list.
@@ -167,47 +168,88 @@ class SHAKE128 {
     x[offset + 6] = (val >> 48) & 0xFF;
     x[offset + 7] = (val >> 56) & 0xFF;
   }
+
   // Constants and rotations of Keccak-f[1600] (Keccak permutation)
-  static const List<int> _rho = <int> [
-    1, 3, 6, 10, 15, 21, 28, 36, 45, 55,
-    2, 14, 27, 41, 56, 8, 25, 43, 62,
-    18, 39, 61, 20, 44
+  static const List<int> _rho = <int>[
+    1,
+    3,
+    6,
+    10,
+    15,
+    21,
+    28,
+    36,
+    45,
+    55,
+    2,
+    14,
+    27,
+    41,
+    56,
+    8,
+    25,
+    43,
+    62,
+    18,
+    39,
+    61,
+    20,
+    44
   ];
 
-  static const List<int> _pi = <int> [
-    10, 7, 11, 17, 18, 3, 5, 16, 8, 21,
-    24, 4, 15, 23, 19, 13, 12, 2, 20,
-    14, 22, 9, 6, 1
+  static const List<int> _pi = <int>[
+    10,
+    7,
+    11,
+    17,
+    18,
+    3,
+    5,
+    16,
+    8,
+    21,
+    24,
+    4,
+    15,
+    23,
+    19,
+    13,
+    12,
+    2,
+    20,
+    14,
+    22,
+    9,
+    6,
+    1
   ];
-
 
   static const List<int> _roundConstants = <int>[
-  0x0000000000000001,
-  0x0000000000008082,
-  0x800000000000808A,
-  0x8000000080008000,
-  0x000000000000808B,
-  0x0000000080000001,
-  0x8000000080008081,
-  0x8000000000008009,
-  0x000000000000008A,
-  0x0000000000000088,
-  0x0000000080008009,
-  0x000000008000000A,
-  0x000000008000808B,
-  0x800000000000008B,
-  0x8000000000008089,
-  0x8000000000008003,
-  0x8000000000008002,
-  0x8000000000000080,
-  0x000000000000800A,
-  0x800000008000000A,
-  0x8000000080008081,
-  0x8000000000008080,
-  0x0000000080000001,
-  0x8000000080008008
-];
-
+    0x0000000000000001,
+    0x0000000000008082,
+    0x800000000000808A,
+    0x8000000080008000,
+    0x000000000000808B,
+    0x0000000080000001,
+    0x8000000080008081,
+    0x8000000000008009,
+    0x000000000000008A,
+    0x0000000000000088,
+    0x0000000080008009,
+    0x000000008000000A,
+    0x000000008000808B,
+    0x800000000000008B,
+    0x8000000000008089,
+    0x8000000000008003,
+    0x8000000000008002,
+    0x8000000000000080,
+    0x000000000000800A,
+    0x800000008000000A,
+    0x8000000080008081,
+    0x8000000000008080,
+    0x0000000080000001,
+    0x8000000080008008
+  ];
 
   /// Implements the Keccak-f[1600] permutation function.
   ///
@@ -276,15 +318,16 @@ class SHAKE128 {
     }
   }
 
-/// Rotates the bits of a 64-bit integer [x] to the left by [n] positions.
-/// 
-/// The bits that overflow on the left are reintroduced on the right, effectively
-/// creating a circular shift. This operation is commonly used in cryptographic
-/// algorithms to provide diffusion.
+  /// Rotates the bits of a 64-bit integer [x] to the left by [n] positions.
+  ///
+  /// The bits that overflow on the left are reintroduced on the right, effectively
+  /// creating a circular shift. This operation is commonly used in cryptographic
+  /// algorithms to provide diffusion.
   static int _rotl64(int x, int n) {
     return ((x << n) & 0xFFFFFFFFFFFFFFFF) | (x >> (64 - n));
   }
 }
+
 /// Helper function for easy use of SHAKE128.
 /// Absorbs [input] and extracts [outlen] bytes from the XOF.
 Uint8List shake128(Uint8List input, int outlen) {
@@ -301,4 +344,3 @@ Uint8List shake128(Uint8List input, int outlen) {
 //   Uint8List out = shake128(input, 64); // 64 bytes of output
 //   print(out);
 // }
-
