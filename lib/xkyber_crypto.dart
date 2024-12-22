@@ -16,5 +16,4 @@ export 'fq.dart';
 export 'indcpa.dart';
 export 'verify.dart';
 export 'kem.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'xkyber_symmetric.dart';

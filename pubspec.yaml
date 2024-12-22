@@ -12,11 +12,12 @@ dependencies:
   crypto: ^3.0.6
   pointycastle: ^3.9.1
   lints: ^5.0.0
+  cryptography: ^2.7.0
 
 dev_dependencies:
   test: ^1.16.0
   collection: ^1.19.1
-  cryptography: ^2.7.0
+  
 
 
 # Etiquetas
