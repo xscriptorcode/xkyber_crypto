@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.9] - 2025-02-08
+### Update
+- Update documentation, fix bugs on ntt, params, poly, example and tests.
+
 ## [1.0.8] - 2024-12-22
 ### Update
 - xkyber_symmetric.dart to make easy the implementation
