@@ -3,7 +3,7 @@ library xkyber_crypto;
 export 'constant_time_comparison.dart';
 export 'kyber_kem.dart';
 export 'kyber_keypair.dart';
-export 'ntt.dart' hide modMul, mod, modAdd, modPow, modSub;
+export 'ntt.dart';
 export 'noise_generator.dart';
 export 'params.dart';
 export 'poly.dart';

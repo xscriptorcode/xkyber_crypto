@@ -1,31 +1,33 @@
-//testfile only for test
-//frommsg_tomsg_test.dart
+// frommsg_tomsg_test.dart
 // ignore_for_file: always_specify_types
 
 import 'dart:typed_data';
+import 'package:test/test.dart';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
 
-/// Test polyfrommsg and polytomsg functions.
-///
-/// The test creates a Uint8List `msg` with values from 0 to KYBER_SYMBYTES-1,
-/// converts it to a polynomial `p` using polyfrommsg, and then converts it
-/// back to a Uint8List `decoded` using polytomsg.
-///
-/// The test asserts that the length of `decoded` is the same as `msg` and
-/// that each element of `decoded` is equal to the corresponding element of
-/// `msg`. Finally, it prints a success message to the console.
-void testPolyFromToMsg() {
-  Uint8List msg = Uint8List.fromList(List.generate(KYBER_SYMBYTES, (i) => i));
-  Poly p = Poly();
-  polyfrommsg(p, msg);
+void main() {
+  group('polyfrommsg / polytomsg', () {
+    test('should correctly convert a message to a polynomial and back', () {
+      // Create a message Uint8List with values from 0 to KYBER_SYMBYTES - 1.
+      final Uint8List msg = Uint8List.fromList(
+          List<int>.generate(KYBER_SYMBYTES, (i) => i));
 
-  Uint8List decoded = Uint8List(KYBER_SYMBYTES);
-  polytomsg(decoded, p);
+      // Convert the message into a polynomial.
+      final Poly p = Poly();
+      polyfrommsg(p, msg);
 
-  assert(decoded.length == msg.length);
-  for (int i = 0; i < msg.length; i++) {
-    assert(decoded[i] == msg[i]);
-  }
-  // ignore: avoid_print
-  print("polyfrommsg / polytomsg test passed!");
+      // Convert the polynomial back to a message.
+      final Uint8List decoded = Uint8List(KYBER_SYMBYTES);
+      polytomsg(decoded, p);
+
+      // Verify that the decoded message has the same length as the original message.
+      expect(decoded.length, equals(msg.length));
+
+      // Verify that each element of the decoded message is equal to the original.
+      for (int i = 0; i < msg.length; i++) {
+        expect(decoded[i], equals(msg[i]),
+            reason: 'Mismatch at index $i: expected ${msg[i]}, got ${decoded[i]}');
+      }
+    });
+  });
 }

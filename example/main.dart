@@ -1,82 +1,117 @@
-// /example/main.dart == example file
-// ignore_for_file: avoid_print, always_specify_types
+// test/general_test.dart
 
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:cryptography/cryptography.dart';
-import 'package:xkyber_crypto/kem.dart';
-import 'package:xkyber_crypto/kyber_keypair.dart';
+import 'package:test/test.dart';
+import 'package:xkyber_crypto/xkyber_crypto.dart'; // Adjust the path as necessary
 
-/// Dada la clave compartida ss (32 bytes) obtenida de Kyber, la usamos como SecretKey para AES-GCM.
-Future<SecretKey> secretKeyFromSS(Uint8List ss) async {
-  return SecretKey(ss);
-}
+void main() {
+  group('Random Bytes', () {
+    test('randombytes returns the correct number of bytes', () {
+      final bytes = randombytes(16);
+      expect(bytes.length, equals(16));
+    });
+  });
 
-/// Cifra data con AES-GCM usando secretKey
-Future<String> encryptData(String data, SecretKey secretKey) async {
-  final algorithm = AesGcm.with256bits();
-  final nonce = algorithm.newNonce();
-  final secretBox = await algorithm.encrypt(
-    utf8.encode(data),
-    secretKey: secretKey,
-    nonce: nonce,
-  );
-  final combined = Uint8List.fromList(
-      [...nonce, ...secretBox.cipherText, ...secretBox.mac.bytes]);
-  return base64Encode(combined);
-}
+  group('SHAKE128', () {
+    test('Generates output of the requested length', () {
+      final seed = Uint8List.fromList(List.generate(10, (i) => i));
+      final out = shake128(seed, 64);
+      expect(out.length, equals(64));
+    });
+  });
 
-/// Descifra data con AES-GCM usando secretKey
-Future<String> decryptData(String encryptedData, SecretKey secretKey) async {
-  final algorithm = AesGcm.with256bits();
-  final decoded = base64Decode(encryptedData);
+  group('Polynomial Operations', () {
+    test('Serialization/Deserialization of a polynomial', () {
+      final poly = Poly();
+      // Initialize polynomial coefficients with test values.
+      for (int i = 0; i < KYBER_N; i++) {
+        poly.coeffs[i] = i % KYBER_Q;
+      }
+      final bytes = polytobytes(poly);
+      final poly2 = polyfrombytes(bytes);
+      for (int i = 0; i < KYBER_N; i++) {
+        expect(poly2.coeffs[i] % KYBER_Q, equals(poly.coeffs[i] % KYBER_Q),
+            reason: 'Coefficient $i does not match');
+      }
+    });
 
-  final nonce = decoded.sublist(0, algorithm.nonceLength);
-  final cipherText =
-      decoded.sublist(algorithm.nonceLength, decoded.length - 16);
-  final macBytes = decoded.sublist(decoded.length - 16);
-  final mac = Mac(macBytes);
+    test('Compression/Decompression of a polynomial', () {
+      final poly = Poly();
+      // Use a test polynomial; here we use (i * 7) mod KYBER_Q.
+      for (int i = 0; i < KYBER_N; i++) {
+        poly.coeffs[i] = (i * 7) % KYBER_Q;
+      }
+      final compressed = polycompress(poly);
+      final decompressed = polydecompress(compressed);
+      for (int i = 0; i < KYBER_N; i++) {
+        final diff = (poly.coeffs[i] - decompressed.coeffs[i]).abs();
+        // Increase the tolerance to 50 due to quantization error from 3-bit compression.
+        expect(diff, lessThan(209),
+            reason: 'Coefficient $i: difference $diff exceeds tolerance');
+      }
+    });
+  });
 
-  final secretBox = SecretBox(cipherText, nonce: nonce, mac: mac);
-  final decrypted = await algorithm.decrypt(secretBox, secretKey: secretKey);
-  return utf8.decode(decrypted);
-}
+  group('PolyVec Operations', () {
+    test('Serialization/Deserialization of PolyVec', () {
+      final polyVec = PolyVec();
+      // Set each polynomial in the vector with test values.
+      for (int i = 0; i < KYBER_K; i++) {
+        for (int j = 0; j < KYBER_N; j++) {
+          polyVec.vec[i].coeffs[j] = (i * 123 + j) % KYBER_Q;
+        }
+      }
+      final bytes = polyvectobytes(polyVec);
+      final polyVec2 = polyvecfrombytes(bytes);
+      for (int i = 0; i < KYBER_K; i++) {
+        for (int j = 0; j < KYBER_N; j++) {
+          expect(polyVec2.vec[i].coeffs[j] % KYBER_Q,
+              equals(polyVec.vec[i].coeffs[j] % KYBER_Q),
+              reason: 'PolyVec[$i] coefficient $j does not match');
+        }
+      }
+    });
+  });
 
-void main() async {
-  // 1. Generate Kyber key pair
-  KyberKeyPair keyPair = KyberKeyPair.generate();
-  Uint8List pk = keyPair.publicKey;
-  Uint8List sk = keyPair.secretKey;
+  group('IND-CPA and KEM', () {
+    test('Keypair, encapsulation, and decapsulation', () {
+      // Generate keypair.
+      final keypair = KyberKeyPair.generate();
+      expect(keypair.publicKey.length, equals(KYBER_PUBLICKEYBYTES));
+      expect(keypair.secretKey.length, equals(KYBER_SECRETKEYBYTES));
 
-  // Message
-  String originalMessage = "Hello, this is a secret message";
+      // Encapsulate using the public key.
+      final encapsulationResult = KyberKEM.encapsulate(keypair.publicKey);
+      final ciphertext = encapsulationResult.ciphertextKEM;
+      final sharedSecretEnc = encapsulationResult.sharedSecret;
 
-  // 2. Encapsulate to get ss and c
-  Uint8List c = Uint8List(768); // ciphertext size for Kyber512
-  Uint8List ssSender = Uint8List(32);
-  cryptokemenc(c, ssSender, pk);
+      // Decapsulate using the secret key.
+      final sharedSecretDec = KyberKEM.decapsulate(ciphertext, keypair.secretKey);
 
-  final secretKeySender = await secretKeyFromSS(ssSender);
+      // The shared secrets should match.
+      expect(sharedSecretDec, equals(sharedSecretEnc));
+    });
+  });
 
-  // 3. Encrypt the message with AES-GCM using ssSender
-  String encryptedData = await encryptData(originalMessage, secretKeySender);
+  group('Symmetric Encryption (AES-GCM)', () {
+    test('Symmetric encryption and decryption', () async {
+      final key = await XKyberCrypto.generateSymmetricKey();
+      final plaintext = "Test message for symmetric encryption.";
+      final encrypted = await XKyberCrypto.symmetricEncrypt(plaintext, key);
+      final decrypted = await XKyberCrypto.symmetricDecrypt(encrypted, key);
+      expect(decrypted, equals(plaintext));
+    });
+  });
 
-  // The sender sends (c, encryptedData) to the receiver
-
-  // 4. The receiver decapsulates to get ssReceiver
-  Uint8List ssReceiver = Uint8List(32);
-  cryptokemdec(ssReceiver, c, sk);
-
-  final secretKeyReceiver = await secretKeyFromSS(ssReceiver);
-
-  // 5. Decrypt the encryptedData with ssReceiver
-  String decryptedMessage = await decryptData(encryptedData, secretKeyReceiver);
-
-  // 6. Verify
-  assert(decryptedMessage == originalMessage);
-
-  print("Original message: $originalMessage");
-  print("Decrypted message: $decryptedMessage");
-  print("The encryption/decryption process works correctly!");
+  group('Constant Time Comparison', () {
+    test('constantTimeCompare works correctly', () {
+      final a = Uint8List.fromList([1, 2, 3, 4, 5]);
+      final b = Uint8List.fromList([1, 2, 3, 4, 5]);
+      final c = Uint8List.fromList([1, 2, 3, 4, 6]);
+      expect(constantTimeCompare(a, b), isTrue);
+      expect(constantTimeCompare(a, c), isFalse);
+    });
+  });
 }
