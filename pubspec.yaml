@@ -1,6 +1,6 @@
 name: xkyber_crypto
 description: A library for post-quantum cryptography using the Kyber algorithm as base.
-version: 1.0.7
+version: 1.0.9
 homepage: https://github.com/xscriptorcode/xkyber_crypto
 repository: https://github.com/xscriptorcode/xkyber_crypto
 issue_tracker: https://github.com/xscriptorcode/xkyber_crypto/issues
