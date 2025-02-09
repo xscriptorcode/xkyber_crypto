@@ -1,5 +1,8 @@
-// example/main.dart as general test
+// example/main.dart as general
 
+// ignore_for_file: always_specify_types
+
+// ignore: unused_import
 import 'dart:convert';
 import 'dart:typed_data';
 
