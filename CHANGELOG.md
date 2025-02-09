@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.9] - 2025-02-08
+## [1.0.8] - 2025-02-08
 ### Update
 - Update documentation, fix bugs on ntt, params, poly, example and tests.
 
