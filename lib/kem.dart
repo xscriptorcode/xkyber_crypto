@@ -35,6 +35,20 @@ import 'shake.dart';
 import 'randombytes.dart';
 import 'verify.dart';
 
+/// Generates a Kyber key pair consisting of a public key `pk` and a private key `sk`.
+///
+/// The function first generates an IND-CPA key pair and stores the public key `pk` and
+/// the private key `sk`. It then hashes the public key and appends this hash to the private key.
+/// Next, it generates a random value `z` and appends it to the private key. The function returns
+/// 0 upon successful execution.
+///
+/// Parameters:
+/// - `pk`: The public key, which must have space for `KYBER_PUBLICKEYBYTES` bytes.
+/// - `sk`: The private key, which must have space for `KYBER_SECRETKEYBYTES` bytes.
+///
+/// Returns:
+/// - `int`: Always returns 0, indicating success.
+
 int cryptokemkeypair(Uint8List pk, Uint8List sk) {
   // generate IND-CPA keypair
   indcpakeypair(pk, sk);
@@ -63,6 +77,13 @@ int cryptokemkeypair(Uint8List pk, Uint8List sk) {
   return 0;
 }
 
+/// Encapsulates a shared secret `ss` using public key `pk` and produces ciphertext `c`.
+///
+/// The algorithm generates a random message `m` of length `KYBER_SYMBYTES`, and then
+/// computes `mh = shake128(m, KYBER_SYMBYTES)`. The key `K = shake128(mh || pk, KYBER_SYMBYTES)`
+/// is then generated, and the coins `coins = shake(K || mh, KYBER_SYMBYTES)` are computed.
+/// The ciphertext `c` is then computed as `c = indcpaenc(mh, pk, coins)`.
+/// Finally, the shared secret `ss = shake(K || c, KYBER_SSBYTES)` is computed and returned.
 int cryptokemenc(Uint8List c, Uint8List ss, Uint8List pk) {
   // m random
   Uint8List m = randombytes(KYBER_SYMBYTES);
@@ -95,6 +116,12 @@ int cryptokemenc(Uint8List c, Uint8List ss, Uint8List pk) {
   return 0;
 }
 
+  /// Decapsulates the shared secret `ss` from ciphertext `c` using private key `sk`.
+  ///
+  /// The algorithm first extracts the public key `pk`, hash of `pk`, and random value `z` from `sk`.
+  /// Then, it computes `m' = indcpadec(c, sk)`, `K' = hash(m' || pk)`, `coins' = hash(K' || m')`, and
+  /// `c' = indcpaenc(m', pk, coins')`. If `c' == c`, then `ss = hash(K' || c)`, otherwise `ss = hash(z || c)`.
+  /// The shared secret `ss` is then returned.
 int cryptokemdec(Uint8List ss, Uint8List c, Uint8List sk) {
   // extract pk, hashPk, z from sk
   Uint8List pk = sk.sublist(

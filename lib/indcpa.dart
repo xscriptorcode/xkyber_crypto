@@ -8,6 +8,16 @@ import 'shake.dart';
 import 'randombytes.dart';
 import 'gen_matrix.dart'; // Import donde está genMatrix
 
+/// Generates an IND-CPA keypair.
+///
+/// The private key is generated as a polyvec in the NTT domain.
+/// The public key is generated as a polyvec in the standard domain,
+/// concatenated with the publicseed used to generate the matrix A.
+///
+/// @param[out] pk The public key.
+/// @param[out] sk The private key.
+/// @pre pk must have room for KYBER_PUBLICKEYBYTES bytes.
+/// @pre sk must have room for KYBER_SECRETKEYBYTES bytes.
 void indcpakeypair(Uint8List pk, Uint8List sk) {
   Uint8List seed = randombytes(KYBER_SYMBYTES);
   Uint8List seedbuf = shake128(seed, KYBER_SYMBYTES * 2);
@@ -53,6 +63,10 @@ void indcpakeypair(Uint8List pk, Uint8List sk) {
   }
 }
 
+/// Encapsulates a shared secret `m` using public key `pk` and `coins`.
+/// `c` must be a pre-allocated array of at least length
+/// `KYBER_POLYVECCOMPRESSEDBYTES + KYBER_POLYCOMPRESSEDBYTES`.
+///
 void indcpaenc(Uint8List c, Uint8List m, Uint8List pk, Uint8List coins) {
   Uint8List publicseed = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES,
       KYBER_POLYVECCOMPRESSEDBYTES + KYBER_SYMBYTES);
@@ -106,6 +120,19 @@ void indcpaenc(Uint8List c, Uint8List m, Uint8List pk, Uint8List coins) {
     c[ubytes.length + i] = vbytes[i];
   }
 }
+
+/// Decapsulates a ciphertext to recover the original message using the secret key.
+///
+/// This function takes a ciphertext `c` and a secret key `sk`, then utilizes
+/// polynomial arithmetic to recover the original message `m`. The ciphertext
+/// is decompressed into two components, `u` and `v`. The secret key is
+/// interpreted as a polynomial vector `s`. The function computes the inner
+/// product of `u` and `s`, subtracts it from `v`, and converts the result
+/// back into the original message format.
+///
+/// @param[out] m The recovered message.
+/// @param[in] c The ciphertext to be decapsulated.
+/// @param[in] sk The secret key used for decapsulation.
 
 void indcpadec(Uint8List m, Uint8List c, Uint8List sk) {
   PolyVec u = polyvecdecompress(c.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES));

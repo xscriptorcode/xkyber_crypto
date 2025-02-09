@@ -2,6 +2,8 @@
 // Kyber NTT, Montgomery conversion, and related functions.
 // Based on the PQClean implementation for Kyber512.
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:core';
 import 'params.dart';
 import 'reduce.dart';

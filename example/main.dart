@@ -50,7 +50,7 @@ void main() {
       final decompressed = polydecompress(compressed);
       for (int i = 0; i < KYBER_N; i++) {
         final diff = (poly.coeffs[i] - decompressed.coeffs[i]).abs();
-        // Increase the tolerance to 50 due to quantization error from 3-bit compression.
+        // Increase the tolerance to 209 due to quantization error from 3-bit compression.
         expect(diff, lessThan(209),
             reason: 'Coefficient $i: difference $diff exceeds tolerance');
       }

@@ -1,5 +1,5 @@
 // ntt_invntt_test.dart
-// ignore_for_file: avoid_print, always_specify_types
+// ignore_for_file: avoid_print, always_specify_types, constant_identifier_names
 
 import 'dart:math';
 import 'package:test/test.dart';

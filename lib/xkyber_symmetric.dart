@@ -22,7 +22,7 @@ class XKyberCrypto {
   ///
   /// The output string is of the form:
   ///
-  ///   <nonce (12 bytes)><ciphertext (variable length)><MAC (16 bytes)>
+  ///   nonce (12 bytes) ciphertext (variable length) MAC (16 bytes)
   ///
   /// The nonce is randomly generated and is included in the output string.
   ///
@@ -54,7 +54,7 @@ class XKyberCrypto {
   /// The input ciphertextBase64 is expected to be a base64-encoded string of the
   /// form:
   ///
-  ///   <nonce (12 bytes)><ciphertext (variable length)><MAC (16 bytes)>
+  ///   nonce (12 bytes)  ciphertext (variable length)  MAC (16 bytes)
   ///
   /// The nonce is expected to be present in the ciphertext and is not stored
   /// separately.
