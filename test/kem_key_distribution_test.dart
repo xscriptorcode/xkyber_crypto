@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:test/test.dart';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
-import 'package:xkyber_crypto/params.dart';
 
 void main() {
   group('Kyber KEM Full Test (IND-CCA2)', () {
@@ -26,6 +25,7 @@ void main() {
 
       // Si deseas ver la parte IND-CPA (comprimida) que se almacena en la pk,
       // ésta se encuentra en los primeros KYBER_POLYVECCOMPRESSEDBYTES bytes.
+      // ignore: unused_local_variable
       Uint8List indcpaPart = pk.sublist(
           0, KYBER_POLYVECCOMPRESSEDBYTES); // Debe ser 256 bytes (2*128)
       Uint8List seedPart = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES,
