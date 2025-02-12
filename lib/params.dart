@@ -32,7 +32,7 @@ const int KYBER_SYMBYTES = 32;  // Seed size (e.g., for SHAKE)
 const int KYBER_SSBYTES = 32;    // Shared secret key size
 
 /// Sizes of keys and ciphertexts for IND-CPA variant.
-const int KYBER_PUBLICKEYBYTES = 288;   // Public key: 256 (polyvec compressed) + 32 (seed)
+const int KYBER_PUBLICKEYBYTES = 800;   // Public key: 256 (polyvec compressed) + 32 (seed)
 const int KYBER_SECRETKEYBYTES = 1632;    // Secret key size in bytes.
 const int KYBER_CIPHERTEXTBYTES = 768;    // Ciphertext size in bytes.
 
