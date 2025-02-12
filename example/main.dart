@@ -91,7 +91,8 @@ void main() {
       final sharedSecretEnc = encapsulationResult.sharedSecret;
 
       // Decapsulate using the secret key.
-      final sharedSecretDec = KyberKEM.decapsulate(ciphertext, keypair.secretKey);
+      final sharedSecretDec =
+          KyberKEM.decapsulate(ciphertext, keypair.secretKey);
 
       // The shared secrets should match.
       expect(sharedSecretDec, equals(sharedSecretEnc));

@@ -16,7 +16,8 @@ int cryptokemkeypair(Uint8List pk, Uint8List sk) {
 
   // store pk at the end of sk
   for (int i = 0; i < KYBER_PUBLICKEYBYTES; i++) {
-    sk[KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES + i] = pk[i];
+    sk[KYBER_SECRETKEYBYTES - KYBER_PUBLICKEYBYTES - KYBER_SYMBYTES + i] =
+        pk[i];
   }
 
   // hash(pk)

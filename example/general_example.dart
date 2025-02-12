@@ -17,7 +17,8 @@ Future<void> main() async {
 
   // 2. Encapsulation
   // Using the public key, encapsulate a shared secret.
-  KyberEncapsulationResult encapsulationResult = KyberKEM.encapsulate(keypair.publicKey);
+  KyberEncapsulationResult encapsulationResult =
+      KyberKEM.encapsulate(keypair.publicKey);
   Uint8List ciphertext = encapsulationResult.ciphertextKEM;
   Uint8List sharedSecretEnc = encapsulationResult.sharedSecret;
   print("\nCiphertext (${ciphertext.length} bytes):");
@@ -27,7 +28,8 @@ Future<void> main() async {
 
   // 3. Decapsulation
   // Using the secret key, decapsulate to recover the shared secret.
-  Uint8List sharedSecretDec = KyberKEM.decapsulate(ciphertext, keypair.secretKey);
+  Uint8List sharedSecretDec =
+      KyberKEM.decapsulate(ciphertext, keypair.secretKey);
   print("\nDecapsulated Shared Secret (${sharedSecretDec.length} bytes):");
   print(sharedSecretDec);
 

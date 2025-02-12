@@ -7,12 +7,14 @@ import 'package:xkyber_crypto/params.dart';
 
 void main() {
   group('Kyber KEM Full Test (IND-CCA2)', () {
-    test('Key generation, public key distribution, and encapsulation/decapsulation', () {
+    test(
+        'Key generation, public key distribution, and encapsulation/decapsulation',
+        () {
       // Para IND-CCA2, según la especificación de Kyber512:
       // - Public key (pk) debe tener KYBER_PUBLICKEYBYTES (800 bytes)
       // - Secret key (sk) debe tener KYBER_SECRETKEYBYTES (1632 bytes)
-      Uint8List pk = Uint8List(KYBER_PUBLICKEYBYTES);   // 800 bytes
-      Uint8List sk = Uint8List(KYBER_SECRETKEYBYTES);    // 1632 bytes
+      Uint8List pk = Uint8List(KYBER_PUBLICKEYBYTES); // 800 bytes
+      Uint8List sk = Uint8List(KYBER_SECRETKEYBYTES); // 1632 bytes
 
       // Genera el par de claves IND-CCA2.
       int retKeypair = cryptokemkeypair(pk, sk);
@@ -24,8 +26,10 @@ void main() {
 
       // Si deseas ver la parte IND-CPA (comprimida) que se almacena en la pk,
       // ésta se encuentra en los primeros KYBER_POLYVECCOMPRESSEDBYTES bytes.
-      Uint8List indcpaPart = pk.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES); // Debe ser 256 bytes (2*128)
-      Uint8List seedPart = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES, KYBER_INDCPA_PUBLICKEYBYTES); // 32 bytes
+      Uint8List indcpaPart = pk.sublist(
+          0, KYBER_POLYVECCOMPRESSEDBYTES); // Debe ser 256 bytes (2*128)
+      Uint8List seedPart = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES,
+          KYBER_INDCPA_PUBLICKEYBYTES); // 32 bytes
 
       // Aunque en la pk IND-CCA2 el tamaño total es 800 bytes,
       // la porción IND-CPA (de 288 bytes) se encuentra almacenada dentro de ella.
@@ -39,7 +43,8 @@ void main() {
       print(base64Encode(indcpaPublicKey));
 
       // Analiza la distribución en la parte comprimida del IND-CPA pk:
-      Uint8List polyvecCompressed = indcpaPublicKey.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES); // 256 bytes
+      Uint8List polyvecCompressed =
+          indcpaPublicKey.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES); // 256 bytes
       int zeroCount = polyvecCompressed.where((b) => b == 0).length;
       int nonZeroCount = polyvecCompressed.length - zeroCount;
       double ratioZeros = zeroCount / polyvecCompressed.length;
@@ -47,9 +52,12 @@ void main() {
 
       print('\n--- IND-CPA Polyvec Compressed Portion (256 bytes) ---');
       print('Zero count: $zeroCount, Non-zero count: $nonZeroCount');
-      print('Zero ratio: ${ratioZeros.toStringAsFixed(2)}, Non-zero ratio: ${ratioNonZeros.toStringAsFixed(2)}');
+      print(
+          'Zero ratio: ${ratioZeros.toStringAsFixed(2)}, Non-zero ratio: ${ratioNonZeros.toStringAsFixed(2)}');
       print('\nPolyvec Compressed (hex):');
-      print(polyvecCompressed.map((b) => b.toRadixString(16).padLeft(2, '0')).join(' '));
+      print(polyvecCompressed
+          .map((b) => b.toRadixString(16).padLeft(2, '0'))
+          .join(' '));
       print('\nPolyvec Compressed (decimal list):');
       print(polyvecCompressed);
 
@@ -63,7 +71,8 @@ void main() {
           reason: 'The polyvec portion has no zeros.');
       // Opcional: verifica que la proporción de ceros esté en un rango razonable (por ejemplo, entre 10% y 90%).
       expect(ratioZeros, inInclusiveRange(0.1, 0.9),
-          reason: 'Zero ratio ($ratioZeros) is outside the expected range (10%-90%).');
+          reason:
+              'Zero ratio ($ratioZeros) is outside the expected range (10%-90%).');
 
       // --- Encapsulación/Decapsulación ---
       Uint8List ciphertext = Uint8List(KYBER_CIPHERTEXTBYTES);

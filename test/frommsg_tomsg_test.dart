@@ -9,8 +9,8 @@ void main() {
   group('polyfrommsg / polytomsg', () {
     test('should correctly convert a message to a polynomial and back', () {
       // Create a message Uint8List with values from 0 to KYBER_SYMBYTES - 1.
-      final Uint8List msg = Uint8List.fromList(
-          List<int>.generate(KYBER_SYMBYTES, (i) => i));
+      final Uint8List msg =
+          Uint8List.fromList(List<int>.generate(KYBER_SYMBYTES, (i) => i));
 
       // Convert the message into a polynomial.
       final Poly p = Poly();
@@ -26,7 +26,8 @@ void main() {
       // Verify that each element of the decoded message is equal to the original.
       for (int i = 0; i < msg.length; i++) {
         expect(decoded[i], equals(msg[i]),
-            reason: 'Mismatch at index $i: expected ${msg[i]}, got ${decoded[i]}');
+            reason:
+                'Mismatch at index $i: expected ${msg[i]}, got ${decoded[i]}');
       }
     });
   });

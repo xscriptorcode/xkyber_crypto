@@ -8,7 +8,9 @@ import 'package:collection/collection.dart';
 
 void main() {
   group('Kyber KEM', () {
-    test('Keypair generation, encapsulation, and decapsulation produce matching shared secrets', () {
+    test(
+        'Keypair generation, encapsulation, and decapsulation produce matching shared secrets',
+        () {
       // Generate keypair.
       final Uint8List pk = Uint8List(KYBER_PUBLICKEYBYTES);
       final Uint8List sk = Uint8List(KYBER_SECRETKEYBYTES);

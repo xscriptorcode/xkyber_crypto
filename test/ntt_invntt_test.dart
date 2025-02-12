@@ -11,11 +11,13 @@ const int KYBER_Q = 3329;
 
 void main() {
   group('NTT/iNTT', () {
-    test('Recovered polynomial is congruent to the original modulo KYBER_Q', () {
+    test('Recovered polynomial is congruent to the original modulo KYBER_Q',
+        () {
       final Random rnd = Random(42);
 
       // Generate a random polynomial of length KYBER_N with coefficients in [0, KYBER_Q-1].
-      final List<int> poly = List<int>.generate(KYBER_N, (_) => rnd.nextInt(KYBER_Q));
+      final List<int> poly =
+          List<int>.generate(KYBER_N, (_) => rnd.nextInt(KYBER_Q));
 
       // Save the original polynomial for later comparison.
       final List<int> original = List<int>.from(poly);
@@ -31,7 +33,8 @@ void main() {
 
       // Si invntt ya multiplica por el factor de escala y devuelve el resultado en el dominio estándar,
       // no es necesario aplicar fromMontgomery nuevamente.
-      final List<int> polyRecovered = polyInvNTT; // O, si fuera necesario, aplicar fromMontgomery a cada coeficiente.
+      final List<int> polyRecovered =
+          polyInvNTT; // O, si fuera necesario, aplicar fromMontgomery a cada coeficiente.
 
       // Verify that the recovered polynomial is congruent to the original modulo KYBER_Q.
       for (int i = 0; i < KYBER_N; i++) {

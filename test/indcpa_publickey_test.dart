@@ -7,7 +7,9 @@ import 'package:xkyber_crypto/params.dart';
 
 void main() {
   group('IND-CPA Public Key Tests', () {
-    test('Generated IND-CPA public key has correct size (288 bytes for Kyber512 IND-CPA) and prints content naturally', () {
+    test(
+        'Generated IND-CPA public key has correct size (288 bytes for Kyber512 IND-CPA) and prints content naturally',
+        () {
       // Asigna buffers para la clave pública IND-CPA y la clave secreta.
       Uint8List pk = Uint8List(KYBER_INDCPA_PUBLICKEYBYTES); // 288 bytes
       Uint8List sk = Uint8List(KYBER_INDCPA_SECRETKEYBYTES);
@@ -22,8 +24,10 @@ void main() {
       // Separa las dos partes de la clave pública:
       // 1. La parte del polyvec comprimido (primeros KYBER_POLYVECCOMPRESSEDBYTES bytes).
       // 2. La semilla pública (últimos KYBER_SYMBYTES bytes).
-      Uint8List polyvecPart = pk.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES); // 256 bytes
-      Uint8List seedPart = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES, KYBER_INDCPA_PUBLICKEYBYTES); // 32 bytes
+      Uint8List polyvecPart =
+          pk.sublist(0, KYBER_POLYVECCOMPRESSEDBYTES); // 256 bytes
+      Uint8List seedPart = pk.sublist(KYBER_POLYVECCOMPRESSEDBYTES,
+          KYBER_INDCPA_PUBLICKEYBYTES); // 32 bytes
 
       // Calcula la distribución de ceros en la parte comprimida.
       int zeroCount = polyvecPart.where((b) => b == 0).length;
@@ -37,17 +41,20 @@ void main() {
 
       print('\nPolyvec Compressed Portion (256 bytes):');
       print('Zero count: $zeroCount, Non-zero count: $nonZeroCount');
-      print('Zero ratio: ${ratioZeros.toStringAsFixed(2)}, Non-zero ratio: ${ratioNonZeros.toStringAsFixed(2)}');
-      
+      print(
+          'Zero ratio: ${ratioZeros.toStringAsFixed(2)}, Non-zero ratio: ${ratioNonZeros.toStringAsFixed(2)}');
+
       print('\nPolyvec Compressed (hex):');
-      print(polyvecPart.map((b) => b.toRadixString(16).padLeft(2, '0')).join(' '));
-      
+      print(polyvecPart
+          .map((b) => b.toRadixString(16).padLeft(2, '0'))
+          .join(' '));
+
       print('\nPolyvec Compressed (decimal list):');
       print(polyvecPart);
-      
+
       print('\nPublic Seed (32 bytes, hex):');
       print(seedPart.map((b) => b.toRadixString(16).padLeft(2, '0')).join(' '));
-      
+
       print('\nFull IND-CPA Public Key (Base64):');
       print(base64Encode(pk));
 
@@ -60,7 +67,8 @@ void main() {
           reason: 'The public seed portion is all zeros.');
       // Opcional: se espera que la proporción de ceros esté en un rango razonable (por ejemplo, entre 10% y 90%).
       expect(ratioZeros, inInclusiveRange(0.1, 0.9),
-          reason: 'The zero ratio ($ratioZeros) is out of the expected range (10%-90%).');
+          reason:
+              'The zero ratio ($ratioZeros) is out of the expected range (10%-90%).');
     });
   });
 }

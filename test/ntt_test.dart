@@ -1,7 +1,6 @@
 import 'dart:core';
 import 'package:xkyber_crypto/xkyber_crypto.dart';
 
-
 /// Example to test the NTT and iNTT functions.
 ///
 /// Shows how to apply the NTT and iNTT to a polynomial in Montgomery form.
@@ -25,8 +24,8 @@ void main() {
   print(recovered);
 
   bool ok = true;
-  for(int i=0; i<256; i++) {
-    if(recovered[i] != original[i]) {
+  for (int i = 0; i < 256; i++) {
+    if (recovered[i] != original[i]) {
       ok = false;
       break;
     }

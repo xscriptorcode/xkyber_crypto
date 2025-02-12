@@ -80,7 +80,14 @@ Uint8List polycompress(Poly a) {
     int t5 = (((t.coeffs[i + 5] << 3) + (KYBER_Q >> 1)) ~/ KYBER_Q) & 0x7;
     int t6 = (((t.coeffs[i + 6] << 3) + (KYBER_Q >> 1)) ~/ KYBER_Q) & 0x7;
     int t7 = (((t.coeffs[i + 7] << 3) + (KYBER_Q >> 1)) ~/ KYBER_Q) & 0x7;
-    int packed = t0 | (t1 << 3) | (t2 << 6) | (t3 << 9) | (t4 << 12) | (t5 << 15) | (t6 << 18) | (t7 << 21);
+    int packed = t0 |
+        (t1 << 3) |
+        (t2 << 6) |
+        (t3 << 9) |
+        (t4 << 12) |
+        (t5 << 15) |
+        (t6 << 18) |
+        (t7 << 21);
     r[pos + 0] = packed & 0xFF;
     r[pos + 1] = (packed >> 8) & 0xFF;
     r[pos + 2] = (packed >> 16) & 0xFF;

@@ -7,7 +7,9 @@ import 'package:xkyber_crypto/params.dart';
 
 void main() {
   group('Kyber KEM Key Generation and Encapsulation/Decapsulation', () {
-    test('Key pair generation produces correct key sizes and matching shared secret', () {
+    test(
+        'Key pair generation produces correct key sizes and matching shared secret',
+        () {
       // Genera la clave pública y la clave privada.
       Uint8List pk = Uint8List(KYBER_PUBLICKEYBYTES);
       Uint8List sk = Uint8List(KYBER_SECRETKEYBYTES);

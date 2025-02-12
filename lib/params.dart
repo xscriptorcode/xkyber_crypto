@@ -28,13 +28,14 @@ const int KYBER_QINV = 62209;
 const int KYBER_ETA = 2;
 
 /// Size in bytes of seeds and symmetric keys.
-const int KYBER_SYMBYTES = 32;  // Seed size (e.g., for SHAKE)
-const int KYBER_SSBYTES = 32;    // Shared secret key size
+const int KYBER_SYMBYTES = 32; // Seed size (e.g., for SHAKE)
+const int KYBER_SSBYTES = 32; // Shared secret key size
 
 /// Sizes of keys and ciphertexts for IND-CPA variant.
-const int KYBER_PUBLICKEYBYTES = 800;   // Public key: 256 (polyvec compressed) + 32 (seed)
-const int KYBER_SECRETKEYBYTES = 1632;    // Secret key size in bytes.
-const int KYBER_CIPHERTEXTBYTES = 768;    // Ciphertext size in bytes.
+const int KYBER_PUBLICKEYBYTES =
+    800; // Public key: 256 (polyvec compressed) + 32 (seed)
+const int KYBER_SECRETKEYBYTES = 1632; // Secret key size in bytes.
+const int KYBER_CIPHERTEXTBYTES = 768; // Ciphertext size in bytes.
 
 /// Sizes related to polynomials.
 /// A full polynomial is represented in 384 bytes using 12-bit encoding per coefficient.
@@ -48,18 +49,21 @@ const int KYBER_POLYCOMPRESSEDBYTES = 128;
 
 /// Derived sizes:
 const int KYBER_POLYVECBYTES = KYBER_K * KYBER_POLYBYTES;
-const int KYBER_POLYVECCOMPRESSEDBYTES = KYBER_K * KYBER_POLYCOMPRESSEDBYTES; // 2 * 128 = 256
+const int KYBER_POLYVECCOMPRESSEDBYTES =
+    KYBER_K * KYBER_POLYCOMPRESSEDBYTES; // 2 * 128 = 256
 
 /// Specific sizes for the internal IND-CPA KEM.
 /// The IND-CPA public key is formed by concatenating a compressed polyvec and a seed.
-const int KYBER_INDCPA_PUBLICKEYBYTES = KYBER_POLYVECCOMPRESSEDBYTES + KYBER_SYMBYTES; // 256 + 32 = 288
+const int KYBER_INDCPA_PUBLICKEYBYTES =
+    KYBER_POLYVECCOMPRESSEDBYTES + KYBER_SYMBYTES; // 256 + 32 = 288
 const int KYBER_INDCPA_SECRETKEYBYTES = KYBER_POLYVECBYTES;
-const int KYBER_INDCPA_BYTES = KYBER_POLYVECCOMPRESSEDBYTES + KYBER_POLYCOMPRESSEDBYTES;
+const int KYBER_INDCPA_BYTES =
+    KYBER_POLYVECCOMPRESSEDBYTES + KYBER_POLYCOMPRESSEDBYTES;
 
 /// Compression bit-lengths used in encoding u and v in the ciphertext.
 /// For this implementation, a full polynomial is encoded using 12 bits per coefficient,
 /// and the compressed polynomial uses 3 bits per coefficient.
-const int KYBER_DU = 12; 
+const int KYBER_DU = 12;
 const int KYBER_DV = 3;
 
 /// Final scaling factor in Montgomery domain (represents 1/256).
